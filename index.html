@@ -1,11 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Vision.co - Weekly COT Data</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vision.co - Weekly COT Data Report</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background-color: #fff;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color: #333;
+      color: #fff;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .bullish {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .bearish {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+  </style>
 </head>
 <body>
-    <h1>Welcome to Vision.co!</h1>
-    <p>Your source for weekly COT data.</p>
+  <h1>Weekly COT Data Report</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Currency</th>
+        <th>Long Contracts</th>
+        <th>Short Contracts</th>
+        <th>Net Position</th>
+        <th>Sentiment</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="bullish">
+        <td>USD</td>
+        <td>30,000</td>
+        <td>20,000</td>
+        <td>+10,000</td>
+        <td>Bullish</td>
+      </tr>
+      <tr class="bearish">
+        <td>EUR</td>
+        <td>25,000</td>
+        <td>35,000</td>
+        <td>-10,000</td>
+        <td>Bearish</td>
+      </tr>
+      <tr class="bullish">
+        <td>CAD</td>
+        <td>15,000</td>
+        <td>10,000</td>
+        <td>+5,000</td>
+        <td>Bullish</td>
+      </tr>
+      <tr class="bearish">
+        <td>GBP</td>
+        <td>18,000</td>
+        <td>22,000</td>
+        <td>-4,000</td>
+        <td>Bearish</td>
+      </tr>
+      <tr class="bullish">
+        <td>JPY</td>
+        <td>12,000</td>
+        <td>8,000</td>
+        <td>+4,000</td>
+        <td>Bullish</td>
+      </tr>
+      <tr class="bearish">
+        <td>CHF</td>
+        <td>9,000</td>
+        <td>11,000</td>
+        <td>-2,000</td>
+        <td>Bearish</td>
+      </tr>
+      <tr class="bullish">
+        <td>AUD</td>
+        <td>14,000</td>
+        <td>12,000</td>
+        <td>+2,000</td>
+        <td>Bullish</td>
+      </tr>
+      <tr class="bearish">
+        <td>NZD</td>
+        <td>7,000</td>
+        <td>9,000</td>
+        <td>-2,000</td>
+        <td>Bearish</td>
+      </tr>
+    </tbody>
+  </table>
 </body>
 </html>
