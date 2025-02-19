@@ -64,12 +64,49 @@
       margin-top: 20px;
       color: #cfd8dc;
     }
+
+    .calendar-section {
+      margin-top: 40px;
+      padding: 20px;
+      background-color: #1a1a1a;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .calendar-section h2 {
+      margin-bottom: 15px;
+    }
+
+    .impact-folder {
+      margin-top: 15px;
+      background-color: #263238;
+      padding: 16px;
+      border-radius: 8px;
+    }
+
+    .impact-folder h3 {
+      font-size: 1.2rem;
+      color: #42a5f5;
+      margin-bottom: 10px;
+    }
+
+    .event {
+      padding: 10px;
+      background-color: #1e1e1e;
+      margin-bottom: 8px;
+      border-radius: 6px;
+    }
+
+    .event-time {
+      font-weight: 600;
+      color: #ffb300;
+    }
   </style>
 </head>
 <body>
-  <h1>📊 Latest COT Data - February 13, 2025</h1>
+  <h1>📊 COT Data & Forex Market Overview - February 13, 2025</h1>
   <div class="info-section">
-    <strong>Note:</strong> Rows are color-coded based on sentiment: <span class="bullish">Bullish</span>, <span class="bearish">Bearish</span>, and <span class="neutral">Neutral</span>.
+    <p>Welcome to this week’s Commitments of Traders (COT) data report and forex market overview. This comprehensive summary provides insight into institutional positioning and currency pair sentiments, supporting informed trading decisions. Analyze key metrics, anticipate market moves, and stay ahead with up-to-date data.</p>
   </div>
 
   <h2>🗂️ Individual Currencies Sentiments</h2>
@@ -96,6 +133,29 @@
     </thead>
     <tbody id="forex-pairs-body"></tbody>
   </table>
+
+  <div class="calendar-section">
+    <h2>📅 Economic Calendar (UTC +8)</h2>
+
+    <div class="impact-folder">
+      <h3>🔵 Low Impact Events</h3>
+      <div class="event"><span class="event-time">Feb 19, 10:00 AM:</span> AUD Consumer Sentiment Index</div>
+      <div class="event"><span class="event-time">Feb 20, 2:30 PM:</span> EUR Construction Output MoM</div>
+    </div>
+
+    <div class="impact-folder">
+      <h3>🟡 Medium Impact Events</h3>
+      <div class="event"><span class="event-time">Feb 21, 4:00 PM:</span> GBP Retail Sales Data</div>
+      <div class="event"><span class="event-time">Feb 22, 5:30 PM:</span> CAD New Housing Price Index</div>
+    </div>
+
+    <div class="impact-folder">
+      <h3>🔴 High Impact Events</h3>
+      <div class="event"><span class="event-time">Feb 22, 9:00 PM:</span> USD FOMC Meeting Minutes</div>
+      <div class="event"><span class="event-time">Feb 23, 8:30 PM:</span> NZD CPI QoQ Release</div>
+      <div class="event"><span class="event-time">Feb 23, 10:00 PM:</span> EUR ECB Monetary Policy Statement</div>
+    </div>
+  </div>
 
   <script>
     const individualCurrencies = [
