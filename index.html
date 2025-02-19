@@ -55,9 +55,6 @@ tr:hover {
   background-color: #2a2a2a;
 }
 
-.high { background-color: #b71c1c; color: #ffffff; font-weight: bold; }
-.medium { background-color: #ffb300; color: #1c1c1c; font-weight: bold; }
-.low { background-color: #1b5e20; color: #ffffff; font-weight: bold; }
 .bullish { background-color: #1b5e20; color: #ffffff; font-weight: bold; }
 .neutral { background-color: #ffb300; color: #1c1c1c; font-weight: bold; }
 .bearish { background-color: #b71c1c; color: #ffffff; font-weight: bold; }
@@ -71,23 +68,7 @@ Track accurate economic indicators, COT data, market sentiment, commodity prices
 </p>
 
 <div class="table-container">
-  <h2>💹 COT Data & Market Sentiment</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Currency</th>
-        <th>Long Contracts</th>
-        <th>Short Contracts</th>
-        <th>Net Position</th>
-        <th>Sentiment</th>
-      </tr>
-    </thead>
-    <tbody id="cot-data"></tbody>
-  </table>
-</div>
-
-<div class="table-container">
-  <h2>📈 Economic & Market Indicators (Accurate Data)</h2>
+  <h2>📈 Economic Indicators & Currency Pairs (Accurate & Color-Coded)</h2>
   <table>
     <thead>
       <tr>
@@ -106,9 +87,7 @@ Track accurate economic indicators, COT data, market sentiment, commodity prices
         <th>50-200 MA Cross</th>
         <th>RSI</th>
         <th>MACD</th>
-        <th>COT Sentiment</th>
-        <th>Overall Score</th>
-        <th>Signal</th>
+        <th>Overall Signal</th>
       </tr>
     </thead>
     <tbody id="economic-data"></tbody>
@@ -122,99 +101,43 @@ const pairs = [
   'USDCAD','USDCHF','USDJPY'
 ];
 
-const cotData = {
-  'USD': { long: 50200, short: 25000 },
-  'EUR': { long: 37000, short: 26000 },
-  'GBP': { long: 31000, short: 22000 },
-  'JPY': { long: 27500, short: 29500 },
-  'AUD': { long: 24000, short: 18500 },
-  'CAD': { long: 22000, short: 16500 },
-  'CHF': { long: 19000, short: 15000 },
-  'NZD': { long: 18000, short: 13500 }
+const fetchData = async () => {
+  const data = await fetch('https://api.forexdatahub.com/indicators').then(res => res.json());
+  renderEconomicTable(data);
 };
 
-const economicIndicators = {
-  'AUDUSD': { cpi: 3.4, ppi: 2.8, retailSales: 2.6, tradeBalance: 7.2, consumerConfidence: 102, businessConfidence: 5, housingData: 48, interestRate: 4.1, bondYieldSpread: 0.6, commodityPrices: 110, volatilityIndex: 17, maCross: 'bullish', rsi: 68, macd: 0.25, cotSentiment: 'bullish' },
-  'EURUSD': { cpi: 2.8, ppi: 2.1, retailSales: 1.9, tradeBalance: 5.5, consumerConfidence: 98, businessConfidence: 2, housingData: 44, interestRate: 3.75, bondYieldSpread: 0.4, commodityPrices: 105, volatilityIndex: 19, maCross: 'neutral', rsi: 52, macd: 0.12, cotSentiment: 'neutral' },
-  'GBPUSD': { cpi: 3.6, ppi: 3.0, retailSales: 2.8, tradeBalance: 4.2, consumerConfidence: 95, businessConfidence: -1, housingData: 46, interestRate: 4.3, bondYieldSpread: 0.55, commodityPrices: 100, volatilityIndex: 20, maCross: 'bearish', rsi: 45, macd: -0.18, cotSentiment: 'bearish' },
-  'USDJPY': { cpi: 3.1, ppi: 2.5, retailSales: 2.4, tradeBalance: -2.1, consumerConfidence: 92, businessConfidence: -4, housingData: 40, interestRate: 0.1, bondYieldSpread: 0.3, commodityPrices: 95, volatilityIndex: 21, maCross: 'neutral', rsi: 50, macd: 0.05, cotSentiment: 'neutral' },
-  'USDCAD': { cpi: 3.0, ppi: 2.3, retailSales: 2.1, tradeBalance: 1.9, consumerConfidence: 90, businessConfidence: -2, housingData: 43, interestRate: 4.0, bondYieldSpread: 0.5, commodityPrices: 98, volatilityIndex: 20, maCross: 'bullish', rsi: 60, macd: 0.20, cotSentiment: 'bullish' }
+const getSignalClass = (signal) => {
+  return signal === 'bullish' ? 'bullish' : signal === 'bearish' ? 'bearish' : 'neutral';
 };
 
-const getClass = (value, high, medium) => value >= high ? 'high' : value >= medium ? 'medium' : 'low';
-
-const calculateScore = (data) => {
-  const factors = [
-    data.cpi >= 3.5 ? 1 : data.cpi >= 2.5 ? 0 : -1,
-    data.ppi >= 3.0 ? 1 : data.ppi >= 2.0 ? 0 : -1,
-    data.retailSales >= 2.5 ? 1 : data.retailSales >= 1.0 ? 0 : -1,
-    data.tradeBalance >= 5 ? 1 : data.tradeBalance >= 0 ? 0 : -1,
-    data.consumerConfidence >= 100 ? 1 : data.consumerConfidence >= 80 ? 0 : -1,
-    data.businessConfidence >= 0 ? 1 : data.businessConfidence >= -10 ? 0 : -1,
-    data.housingData >= 50 ? 1 : data.housingData >= 30 ? 0 : -1,
-    data.interestRate >= 4.0 ? 1 : data.interestRate >= 3.0 ? 0 : -1,
-    data.bondYieldSpread >= 0.5 ? 1 : data.bondYieldSpread >= 0.2 ? 0 : -1,
-    data.commodityPrices >= 100 ? 1 : data.commodityPrices >= 80 ? 0 : -1,
-    data.volatilityIndex < 18 ? 1 : data.volatilityIndex < 22 ? 0 : -1,
-    data.maCross === 'bullish' ? 1 : data.maCross === 'bearish' ? -1 : 0,
-    data.rsi >= 70 ? -1 : data.rsi <= 30 ? 1 : 0,
-    data.macd >= 0 ? 1 : -1,
-    data.cotSentiment === 'bullish' ? 1 : data.cotSentiment === 'bearish' ? -1 : 0
-  ];
-  const total = factors.reduce((a, b) => a + b, 0);
-  const signal = total > 5 ? 'bullish' : total < -5 ? 'bearish' : 'neutral';
-  return { score: total, signal };
-};
-
-const renderCOTTable = () => {
-  const rows = Object.entries(cotData).map(([currency, { long, short }]) => {
-    const net = long - short;
-    const sentiment = net > 5000 ? 'bullish' : net < -5000 ? 'bearish' : 'neutral';
-    return `<tr>
-      <td>${currency}</td>
-      <td>${long.toLocaleString()}</td>
-      <td>${short.toLocaleString()}</td>
-      <td class="${net > 0 ? 'high' : net === 0 ? 'medium' : 'low'}">${net.toLocaleString()}</td>
-      <td class="${sentiment}">${sentiment.charAt(0).toUpperCase() + sentiment.slice(1)}</td>
-    </tr>`;
-  });
-  document.getElementById('cot-data').innerHTML = rows.join('');
-};
-
-const renderEconomicTable = () => {
+const renderEconomicTable = (data) => {
   const rows = pairs.map(pair => {
-    const data = economicIndicators[pair] || {
-      cpi: '-', ppi: '-', retailSales: '-', tradeBalance: '-', consumerConfidence: '-', businessConfidence: '-', housingData: '-', interestRate: '-', bondYieldSpread: '-', commodityPrices: '-', volatilityIndex: '-', maCross: '-', rsi: '-', macd: '-', cotSentiment: '-'
-    };
-
-    const { score, signal } = data.cpi !== '-' ? calculateScore(data) : { score: '-', signal: '-' };
+    const d = data[pair] || {};
+    const signalClass = getSignalClass(d.signal || 'neutral');
 
     return `<tr>
       <td>${pair}</td>
-      <td>${data.cpi}</td>
-      <td>${data.ppi}</td>
-      <td>${data.retailSales}</td>
-      <td>${data.tradeBalance}</td>
-      <td>${data.consumerConfidence}</td>
-      <td>${data.businessConfidence}</td>
-      <td>${data.housingData}</td>
-      <td>${data.interestRate}</td>
-      <td>${data.bondYieldSpread}</td>
-      <td>${data.commodityPrices}</td>
-      <td>${data.volatilityIndex}</td>
-      <td>${data.maCross}</td>
-      <td>${data.rsi}</td>
-      <td>${data.macd}</td>
-      <td>${data.cotSentiment}</td>
-      <td>${score}</td>
-      <td>${signal.charAt(0).toUpperCase() + signal.slice(1)}</td>
+      <td>${d.cpi ?? '-'}</td>
+      <td>${d.ppi ?? '-'}</td>
+      <td>${d.retailSales ?? '-'}</td>
+      <td>${d.tradeBalance ?? '-'}</td>
+      <td>${d.consumerConfidence ?? '-'}</td>
+      <td>${d.businessConfidence ?? '-'}</td>
+      <td>${d.housingData ?? '-'}</td>
+      <td>${d.interestRate ?? '-'}</td>
+      <td>${d.bondYieldSpread ?? '-'}</td>
+      <td>${d.commodityPrices ?? '-'}</td>
+      <td>${d.volatilityIndex ?? '-'}</td>
+      <td>${d.maCross ?? '-'}</td>
+      <td>${d.rsi ?? '-'}</td>
+      <td>${d.macd ?? '-'}</td>
+      <td class="${signalClass}">${d.signal?.toUpperCase() ?? '-'}</td>
     </tr>`;
   });
   document.getElementById('economic-data').innerHTML = rows.join('');
 };
 
-renderCOTTable();
-renderEconomicTable();
+fetchData();
 </script>
 
 </body>
