@@ -123,5 +123,118 @@
       <tr class="bullish"><td>USD/CHF</td><td>Bullish</td></tr>
     </tbody>
   </table>
-</body>
+</body># Forex Edge Dashboard: Live Economic Data & Currency Pair Scoring
+# This code pulls live economic data and generates bullish/bearish scores for specified currency pairs.
+
+import requests
+import pandas as pd
+from datetime import datetime
+
+# --- Configuration ---
+API_KEY = 'YOUR_API_KEY_HERE'  # Replace with a valid economic data API key
+BASE_URL = 'https://api.example.com/economic'  # Placeholder URL; replace with actual API endpoint
+
+# Currency pairs to track
+currency_pairs = [
+    'AUDCHF', 'AUDJPY', 'AUDUSD', 'AUDNZD', 'AUDCAD', 'EURUSD', 'EURCAD', 'EURAUD', 'EURJPY', 'EURNZD',
+    'EURGBP', 'GBPCAD', 'GBPCHF', 'GBPAUD', 'GBPUSD', 'GBPJPY', 'NZDCAD', 'NZDJPY', 'NZDUSD',
+    'CADCHF', 'CADJPY', 'CHFJPY', 'USDCAD', 'USDCHF', 'USDJPY'
+]
+
+# Economic indicators to track
+indicators = ['GDP', 'PMI', 'CPI', 'InterestRate']
+
+# Scoring system thresholds
+scoring_thresholds = {
+    'Very Bullish': 2,
+    'Bullish': 1,
+    'Neutral': 0,
+    'Bearish': -1,
+    'Very Bearish': -2
+}
+
+# Function to fetch live economic data (mock function with placeholders for now)
+def fetch_economic_data(currency):
+    response = requests.get(f"{BASE_URL}?currency={currency}&apikey={API_KEY}")
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return {indicator: None for indicator in indicators}
+
+# Function to calculate a score based on economic data
+def calculate_score(data):
+    score = 0
+    
+    # Example scoring logic (simplified)
+    if data['GDP'] and data['GDP'] > 2.0:
+        score += 1
+    elif data['GDP'] and data['GDP'] < 1.0:
+        score -= 1
+
+    if data['PMI'] and data['PMI'] > 50:
+        score += 1
+    elif data['PMI'] and data['PMI'] < 45:
+        score -= 1
+
+    if data['CPI'] and data['CPI'] > 2.5:
+        score += 1
+    elif data['CPI'] and data['CPI'] < 1.0:
+        score -= 1
+
+    if data['InterestRate'] and data['InterestRate'] > 2.0:
+        score += 1
+    elif data['InterestRate'] and data['InterestRate'] < 0.5:
+        score -= 1
+
+    return score
+
+# Map numerical score to sentiment
+def map_score_to_sentiment(score):
+    if score >= 3:
+        return 'Very Bullish'
+    elif score == 2:
+        return 'Bullish'
+    elif score == 1:
+        return 'Bullish'
+    elif score == 0:
+        return 'Neutral'
+    elif score == -1:
+        return 'Bearish'
+    else:
+        return 'Very Bearish'
+
+# Generate data and scores
+results = []
+for pair in currency_pairs:
+    base_currency = pair[:3]
+    quote_currency = pair[3:]
+
+    base_data = fetch_economic_data(base_currency)
+    quote_data = fetch_economic_data(quote_currency)
+
+    base_score = calculate_score(base_data)
+    quote_score = calculate_score(quote_data)
+
+    pair_score = base_score - quote_score
+    sentiment = map_score_to_sentiment(pair_score)
+
+    results.append({
+        'Currency Pair': pair,
+        'Base Score': base_score,
+        'Quote Score': quote_score,
+        'Pair Score': pair_score,
+        'Sentiment': sentiment
+    })
+
+# Create DataFrame and display results
+df = pd.DataFrame(results)
+print(df)
+
+# Export to CSV (optional)
+df.to_csv('forex_edge_dashboard.csv', index=False)
+
+# --- End of Code ---
+# Replace the mock API URL and provide a valid API key to pull live economic data.
+# The scoring logic can be fine-tuned for more precise analysis.
+
 </html>
