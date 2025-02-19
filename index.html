@@ -172,4 +172,17 @@
           <td class="${getClass(data.bondYieldSpread, 0.5, 0.2)}">${data.bondYieldSpread}</td>
           <td class="${getClass(data.commodityCorr, 0.5, 0)}">${data.commodityCorr}</td>
           <td class="${getClass(data.volatility, 22, 18)}">${data.volatility}</td>
-          <td class="${data.contrarianSignal}">${data.contrarianSignal.charAt(0
+          <td class="${data.contrarianSignal}">${data.contrarianSignal.charAt(0).toUpperCase() + data.contrarianSignal.slice(1)}</td>
+          <td class="${data.cot}">${data.cot.charAt(0).toUpperCase() + data.cot.slice(1)}</td>
+          <td class="${signal}">${score}</td>
+          <td class="${signal}">${signal.charAt(0).toUpperCase() + signal.slice(1)}</td>
+        </tr>`;
+      });
+      document.getElementById('economic-data').innerHTML = rows.join('');
+    };
+
+    renderCOTTable();
+    renderEconomicTable();
+  </script>
+</body>
+</html>
