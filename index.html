@@ -197,46 +197,32 @@
       { pair: 'USD/CHF', sentiment: 'Bearish' }
     ];
 
-    const renderIndividualCurrencies = (data) => {
-      const tbody = document.getElementById('individual-currencies-body');
+    const renderTable = (data, tbodyId, isCurrencyTable = false) => {
+      const tbody = document.getElementById(tbodyId);
       tbody.innerHTML = '';
 
-      data.forEach(({ currency, long, short }) => {
-        const net = long - short;
-        const sentiment = net > 0 ? 'bullish' : net < 0 ? 'bearish' : 'neutral';
+      data.forEach((item) => {
+        const sentimentClass = item.sentiment?.toLowerCase() || ((item.long - item.short) > 0 ? 'bullish' : (item.long - item.short) < 0 ? 'bearish' : 'neutral');
 
-        const row = `
-          <tr class="${sentiment}">
-            <td>${currency}</td>
-            <td>${long.toLocaleString()}</td>
-            <td>${short.toLocaleString()}</td>
-            <td>${net.toLocaleString()}</td>
-            <td>${sentiment.charAt(0).toUpperCase() + sentiment.slice(1)}</td>
-          </tr>
-        `;
+        const row = isCurrencyTable
+          ? `<tr class="${sentimentClass}">
+              <td>${item.currency}</td>
+              <td>${item.long.toLocaleString()}</td>
+              <td>${item.short.toLocaleString()}</td>
+              <td>${(item.long - item.short).toLocaleString()}</td>
+              <td>${sentimentClass.charAt(0).toUpperCase() + sentimentClass.slice(1)}</td>
+            </tr>`
+          : `<tr class="${sentimentClass}">
+              <td>${item.pair}</td>
+              <td>${item.sentiment}</td>
+            </tr>`;
+
         tbody.insertAdjacentHTML('beforeend', row);
       });
     };
 
-    const renderForexPairs = (data) => {
-      const tbody = document.getElementById('forex-pairs-body');
-      tbody.innerHTML = '';
-
-      data.forEach(({ pair, sentiment }) => {
-        const sentimentClass = sentiment.toLowerCase();
-
-        const row = `
-          <tr class="${sentimentClass}">
-            <td>${pair}</td>
-            <td>${sentiment}</td>
-          </tr>
-        `;
-        tbody.insertAdjacentHTML('beforeend', row);
-      });
-    };
-
-    renderIndividualCurrencies(individualCurrencies);
-    renderForexPairs(forexPairs);
+    renderTable(individualCurrencies, 'individual-currencies-body', true);
+    renderTable(forexPairs, 'forex-pairs-body');
   </script>
 </body>
 </html>
