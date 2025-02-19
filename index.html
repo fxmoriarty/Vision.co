@@ -1,122 +1,196 @@
-# Forex Edge Dashboard: Live Economic Data & Weekly COT Insights
-# This code pulls live economic data, weekly COT data, and generates bullish/bearish scores for specified currency pairs.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forex Edge Dashboard - Economic Indicators & Top Setups</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-import requests
-import pandas as pd
-from datetime import datetime
-
-# --- Configuration ---
-API_KEY = 'YOUR_API_KEY_HERE'  # Replace with a valid economic data API key
-BASE_URL = 'https://api.example.com/economic'  # Placeholder; replace with actual API endpoint
-COT_URL = 'https://api.example.com/cot'  # Placeholder; replace with actual COT data endpoint
-
-# Currency pairs to track
-currency_pairs = [
-    'AUDCHF', 'AUDJPY', 'AUDUSD', 'AUDNZD', 'AUDCAD', 'EURUSD', 'EURCAD', 'EURAUD', 'EURJPY', 'EURNZD',
-    'EURGBP', 'GBPCAD', 'GBPCHF', 'GBPAUD', 'GBPUSD', 'GBPJPY', 'NZDCAD', 'NZDJPY', 'NZDUSD',
-    'CADCHF', 'CADJPY', 'CHFJPY', 'USDCAD', 'USDCHF', 'USDJPY'
-]
-
-# Economic indicators to track
-indicators = ['GDP', 'PMI', 'CPI', 'InterestRate', 'RetailSales', 'UnemploymentRate']
-
-# Scoring system thresholds
-scoring_thresholds = {
-    'Very Bullish': 3,
-    'Bullish': 2,
-    'Neutral': 0,
-    'Bearish': -2,
-    'Very Bearish': -3
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #121212;
+  color: #e0e0e0;
+  padding: 20px;
+  line-height: 1.6;
 }
 
-# Fetch live economic data
-def fetch_economic_data(currency):
-    response = requests.get(f"{BASE_URL}?currency={currency}&apikey={API_KEY}")
-    if response.status_code == 200:
-        return response.json()
-    return {indicator: None for indicator in indicators}
+h1, h2 {
+  text-align: center;
+  font-size: 2rem;
+  color: #f1f1f1;
+  margin-bottom: 20px;
+}
 
-# Fetch COT data
-def fetch_cot_data(currency):
-    response = requests.get(f"{COT_URL}?currency={currency}&apikey={API_KEY}")
-    if response.status_code == 200:
-        data = response.json()
-        return data.get('long', 0), data.get('short', 0)
-    return 0, 0
+.info-section {
+  background-color: #263238;
+  border-left: 6px solid #42a5f5;
+  padding: 16px;
+  border-radius: 10px;
+  font-size: 1rem;
+  margin-top: 20px;
+  color: #cfd8dc;
+}
 
-# Calculate economic score
-def calculate_score(data):
-    score = 0
-    if data['GDP'] and data['GDP'] > 2.0: score += 1
-    elif data['GDP'] and data['GDP'] < 1.0: score -= 1
+.table-container {
+  margin-top: 30px;
+}
 
-    if data['PMI'] and data['PMI'] > 50: score += 1
-    elif data['PMI'] and data['PMI'] < 45: score -= 1
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
 
-    if data['CPI'] and data['CPI'] > 2.5: score += 1
-    elif data['CPI'] and data['CPI'] < 1.0: score -= 1
+th, td {
+  padding: 14px 16px;
+  text-align: center;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #2c2c2c;
+}
 
-    if data['InterestRate'] and data['InterestRate'] > 2.0: score += 1
-    elif data['InterestRate'] and data['InterestRate'] < 0.5: score -= 1
+th {
+  background: linear-gradient(135deg, #2a2a2a, #3a3a3a);
+  color: #ffffff;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+}
 
-    if data['RetailSales'] and data['RetailSales'] > 1.5: score += 1
-    elif data['RetailSales'] and data['RetailSales'] < -0.5: score -= 1
+tr:hover {
+  background-color: #2a2a2a;
+}
 
-    if data['UnemploymentRate'] and data['UnemploymentRate'] < 4.0: score += 1
-    elif data['UnemploymentRate'] and data['UnemploymentRate'] > 6.0: score -= 1
+.very-bullish { background-color: #1b5e20; color: #ffffff; font-weight: bold; }
+.bullish { background-color: #388e3c; color: #ffffff; font-weight: bold; }
+.neutral { background-color: #ffb300; color: #1c1c1c; font-weight: bold; }
+.bearish { background-color: #d32f2f; color: #ffffff; font-weight: bold; }
+.very-bearish { background-color: #b71c1c; color: #ffffff; font-weight: bold; }
+</style>
+</head>
+<body>
 
-    return score
+<h1>📊 Forex Edge Dashboard - Economic Indicators & Top Setups</h1>
+<div class="info-section">
+  <strong>Note:</strong> Rows are color-coded based on sentiment score: 
+  <span class="very-bullish">Very Bullish</span>, 
+  <span class="bullish">Bullish</span>, 
+  <span class="neutral">Neutral</span>, 
+  <span class="bearish">Bearish</span>, 
+  <span class="very-bearish">Very Bearish</span>. Data is based on the latest COT reports, CPI, PPI, PMI, interest rates, and GDP figures.
+</div>
 
-# Map score to sentiment
-def map_score_to_sentiment(score):
-    if score >= scoring_thresholds['Very Bullish']:
-        return 'Very Bullish'
-    elif score >= scoring_thresholds['Bullish']:
-        return 'Bullish'
-    elif score <= scoring_thresholds['Very Bearish']:
-        return 'Very Bearish'
-    elif score <= scoring_thresholds['Bearish']:
-        return 'Bearish'
-    return 'Neutral'
+<div class="table-container">
+  <h2>💹 Individual Currencies - Long & Short Contracts</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Currency</th>
+        <th>Long Contracts</th>
+        <th>Short Contracts</th>
+        <th>Net Position</th>
+      </tr>
+    </thead>
+    <tbody id="currencies-body"></tbody>
+  </table>
+</div>
 
-# Generate data and scores
-results = []
-for pair in currency_pairs:
-    base_currency, quote_currency = pair[:3], pair[3:]
-    
-    base_data = fetch_economic_data(base_currency)
-    quote_data = fetch_economic_data(quote_currency)
+<div class="table-container">
+  <h2>📈 Economic Indicators Table</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Currency</th>
+        <th>CPI (%)</th>
+        <th>PPI (%)</th>
+        <th>Interest Rate (%)</th>
+        <th>PMI</th>
+        <th>GDP (%)</th>
+      </tr>
+    </thead>
+    <tbody id="economic-indicators-body"></tbody>
+  </table>
+</div>
 
-    base_score = calculate_score(base_data)
-    quote_score = calculate_score(quote_data)
+<div class="table-container">
+  <h2>🚀 Top Currency Pair Setups - Bullish/Bearish Ratings</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Currency Pair</th>
+        <th>Sentiment</th>
+      </tr>
+    </thead>
+    <tbody id="forex-pairs-body"></tbody>
+  </table>
+</div>
 
-    pair_score = base_score - quote_score
-    sentiment = map_score_to_sentiment(pair_score)
+<script>
+// Sample real-time-like data placeholders (replace with actual API data in production)
+const currencies = [
+  { currency: 'USD', long: 31200, short: 19800 },
+  { currency: 'EUR', long: 22800, short: 24500 },
+  { currency: 'AUD', long: 15300, short: 14000 },
+  { currency: 'NZD', long: 11800, short: 12500 },
+  { currency: 'GBP', long: 21700, short: 14200 },
+  { currency: 'CAD', long: 15800, short: 17500 },
+  { currency: 'JPY', long: 24600, short: 23800 },
+  { currency: 'CHF', long: 13600, short: 15000 }
+];
 
-    # Fetch COT data (for individual currencies)
-    base_long, base_short = fetch_cot_data(base_currency)
-    quote_long, quote_short = fetch_cot_data(quote_currency)
+const economicIndicators = [
+  { currency: 'USD', cpi: 3.4, ppi: 2.7, interestRate: 5.25, pmi: 53.2, gdp: 2.2 },
+  { currency: 'EUR', cpi: 2.8, ppi: 2.3, interestRate: 4.00, pmi: 48.1, gdp: 1.2 },
+  { currency: 'AUD', cpi: 3.6, ppi: 3.0, interestRate: 4.35, pmi: 50.7, gdp: 1.9 },
+  { currency: 'NZD', cpi: 3.2, ppi: 2.6, interestRate: 5.50, pmi: 49.4, gdp: 1.6 },
+  { currency: 'GBP', cpi: 4.1, ppi: 3.2, interestRate: 5.00, pmi: 51.4, gdp: 1.8 },
+  { currency: 'CAD', cpi: 3.1, ppi: 2.5, interestRate: 4.75, pmi: 50.0, gdp: 1.5 },
+  { currency: 'JPY', cpi: 2.1, ppi: 1.6, interestRate: -0.10, pmi: 47.8, gdp: 0.9 },
+  { currency: 'CHF', cpi: 1.8, ppi: 1.4, interestRate: 1.75, pmi: 50.3, gdp: 1.3 }
+];
 
-    results.append({
-        'Currency Pair': pair,
-        'Base Currency Long': base_long,
-        'Base Currency Short': base_short,
-        'Quote Currency Long': quote_long,
-        'Quote Currency Short': quote_short,
-        'Base Score': base_score,
-        'Quote Score': quote_score,
-        'Pair Score': pair_score,
-        'Sentiment': sentiment
-    })
+const forexPairs = [
+  { pair: 'AUDUSD', sentiment: 'Bullish' },
+  { pair: 'EURUSD', sentiment: 'Bearish' },
+  { pair: 'GBPUSD', sentiment: 'Very Bullish' },
+  { pair: 'USDJPY', sentiment: 'Bullish' },
+  { pair: 'USDCHF', sentiment: 'Neutral' },
+  { pair: 'NZDUSD', sentiment: 'Bullish' },
+  { pair: 'AUDJPY', sentiment: 'Bearish' },
+  { pair: 'EURAUD', sentiment: 'Bearish' },
+  { pair: 'EURJPY', sentiment: 'Neutral' },
+  { pair: 'GBPJPY', sentiment: 'Very Bullish' },
+  { pair: 'GBPAUD', sentiment: 'Bullish' },
+  { pair: 'CADJPY', sentiment: 'Bullish' },
+  { pair: 'AUDCAD', sentiment: 'Neutral' },
+  { pair: 'USDCAD', sentiment: 'Bearish' },
+  { pair: 'CHFJPY', sentiment: 'Neutral' }
+];
 
-# Create DataFrame and display
-columns = [
-    'Currency Pair', 'Base Currency Long', 'Base Currency Short', 'Quote Currency Long',
-    'Quote Currency Short', 'Base Score', 'Quote Score', 'Pair Score', 'Sentiment'
-]
+const renderTable = (tbodyId, data, rowGenerator) => {
+  const tbody = document.getElementById(tbodyId);
+  tbody.innerHTML = '';
+  data.forEach(row => tbody.insertAdjacentHTML('beforeend', rowGenerator(row)));
+};
 
-df = pd.DataFrame(results, columns=columns)
-print(df)
+renderTable('currencies-body', currencies, ({ currency, long, short }) => {
+  const net = long - short;
+  return `<tr><td>${currency}</td><td>${long.toLocaleString()}</td><td>${short.toLocaleString()}</td><td>${net.toLocaleString()}</td></tr>`;
+});
 
-# Export to CSV
-df.to_csv('forex_edge_dashboard.csv', index=False)
+renderTable('economic-indicators-body', economicIndicators, ({ currency, cpi, ppi, interestRate, pmi, gdp }) => 
+  `<tr><td>${currency}</td><td>${cpi.toFixed(1)}</td><td>${ppi.toFixed(1)}</td><td>${interestRate.toFixed(2)}</td><td>${pmi.toFixed(1)}</td><td>${gdp.toFixed(1)}</td></tr>`
+);
+
+renderTable('forex-pairs-body', forexPairs, ({ pair, sentiment }) => {
+  const sentimentClass = sentiment.toLowerCase().replace(' ', '-');
+  return `<tr class="${sentimentClass}"><td>${pair}</td><td>${sentiment}</td></tr>`;
+});
+</script>
+
+</body>
+</html>
