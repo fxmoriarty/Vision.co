@@ -132,9 +132,7 @@
       'CHFJPY': { cpi: 3.4, ppi: 2.2, interestRate: 4.0, retailSales: 1.9, consumerConfidence: 94.5, businessConfidence: 107, riskSentiment: 'Risk-Off', score: 4.0 },
       'USDCAD': { cpi: 3.8, ppi: 2.9, interestRate: 4.1, retailSales: 2.3, consumerConfidence: 99.5, businessConfidence: 113, riskSentiment: 'Risk-On', score: 4.8 },
       'USDCHF': { cpi: 3.2, ppi: 2.3, interestRate: 4.4, retailSales: 2.0, consumerConfidence: 96.5, businessConfidence: 110, riskSentiment: 'Risk-Off', score: 4.3 },
-      'USDJPY': { cpi: 3.1, ppi: 2.8, interestRate: 5.0, retailSales: 2.0, consumerConfidence: 97.0, businessConfidence: 108, riskSentiment: 'Risk-Off', score: 4.2 },
-      'GBPJPY': { cpi: 4.1, ppi: 3.2, interestRate: 4.2, retailSales: 1.9, consumerConfidence: 89.5, businessConfidence: 110, riskSentiment: 'Risk-On', score: 4.6 },
-      // Add the other pairs similarly...
+      'GBPJPY': { cpi: 4.1, ppi: 3.2, interestRate: 4.2, retailSales: 1.9, consumerConfidence: 89.5, businessConfidence: 110, riskSentiment: 'Risk-On', score: 4.6 }
     };
 
     // Display COT data for individual currencies
@@ -172,18 +170,4 @@
             <td>${data.consumerConfidence}</td>
             <td>${data.businessConfidence}</td>
             <td>${data.riskSentiment}</td>
-            <td>${data.score}</td>
-            <td class="${signal}">${signal}</td>
-          </tr>
-        `;
-      }
-      document.getElementById('economic-data').innerHTML = economicTable;
-    }
-
-    // Initialize the tables
-    displayCotData();
-    displayEconomicData();
-  </script>
-
-</body>
-</html>
+            <td>${data
