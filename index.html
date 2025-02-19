@@ -107,3 +107,147 @@
   </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Currency Pair Sentiment Report</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #333;
+      color: #fff;
+    }
+
+    .bullish {
+      background-color: #c8e6c9;
+      color: #2e7d32;
+      font-weight: bold;
+    }
+
+    .bearish {
+      background-color: #ffcdd2;
+      color: #c62828;
+      font-weight: bold;
+    }
+
+    .neutral {
+      background-color: #e0e0e0;
+      color: #555;
+      font-weight: bold;
+    }
+
+    section {
+      margin-top: 40px;
+    }
+
+    h2 {
+      margin-top: 30px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1>Major & Minor Currency Pair Sentiment Report</h1>
+
+  <section>
+    <h2>Major Pairs</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Currency Pair</th>
+          <th>Sentiment</th>
+        </tr>
+      </thead>
+      <tbody id="major-pairs"></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Minor Pairs</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Currency Pair</th>
+          <th>Sentiment</th>
+        </tr>
+      </thead>
+      <tbody id="minor-pairs"></tbody>
+    </table>
+  </section>
+
+  <script>
+    const majorPairs = [
+      { pair: 'EUR/USD', sentiment: 'bullish' },
+      { pair: 'GBP/USD', sentiment: 'bearish' },
+      { pair: 'USD/JPY', sentiment: 'neutral' },
+      { pair: 'AUD/USD', sentiment: 'bullish' },
+      { pair: 'USD/CHF', sentiment: 'bearish' },
+      { pair: 'USD/CAD', sentiment: 'neutral' },
+      { pair: 'NZD/USD', sentiment: 'bullish' }
+    ];
+
+    const minorPairs = [
+      { pair: 'EUR/GBP', sentiment: 'neutral' },
+      { pair: 'EUR/AUD', sentiment: 'bearish' },
+      { pair: 'EUR/NZD', sentiment: 'bullish' },
+      { pair: 'EUR/CAD', sentiment: 'neutral' },
+      { pair: 'EUR/CHF', sentiment: 'bearish' },
+      { pair: 'GBP/AUD', sentiment: 'bullish' },
+      { pair: 'GBP/CAD', sentiment: 'neutral' },
+      { pair: 'GBP/CHF', sentiment: 'bearish' },
+      { pair: 'GBP/JPY', sentiment: 'bullish' },
+      { pair: 'AUD/NZD', sentiment: 'neutral' },
+      { pair: 'AUD/CAD', sentiment: 'bullish' },
+      { pair: 'AUD/JPY', sentiment: 'bearish' },
+      { pair: 'AUD/CHF', sentiment: 'neutral' },
+      { pair: 'NZD/CAD', sentiment: 'bearish' },
+      { pair: 'NZD/JPY', sentiment: 'bullish' },
+      { pair: 'NZD/CHF', sentiment: 'neutral' },
+      { pair: 'CAD/JPY', sentiment: 'bearish' },
+      { pair: 'CAD/CHF', sentiment: 'neutral' },
+      { pair: 'CHF/JPY', sentiment: 'bullish' }
+    ];
+
+    const populateTable = (pairs, tableId) => {
+      const tbody = document.getElementById(tableId);
+      tbody.innerHTML = ''; // Clear existing rows
+      pairs.forEach(({ pair, sentiment }) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${pair}</td>
+          <td class="${sentiment}">${sentiment.charAt(0).toUpperCase() + sentiment.slice(1)}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    };
+
+    populateTable(majorPairs, 'major-pairs');
+    populateTable(minorPairs, 'minor-pairs');
+  </script>
+</body>
+</html>
