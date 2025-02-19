@@ -55,16 +55,6 @@
     .bearish { background-color: #c62828; color: #ffffff; font-weight: bold; }
     .neutral { background-color: #ffb300; color: #1c1c1c; font-weight: bold; }
 
-    .info-section {
-      background-color: #263238;
-      border-left: 6px solid #42a5f5;
-      padding: 16px;
-      border-radius: 10px;
-      font-size: 1rem;
-      margin-top: 20px;
-      color: #cfd8dc;
-    }
-
     .calendar-section {
       margin-top: 40px;
       padding: 20px;
@@ -73,41 +63,10 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     }
 
-    .calendar-section h2 {
-      margin-bottom: 15px;
-    }
-
-    .impact-folder {
-      margin-top: 15px;
-      background-color: #263238;
-      padding: 16px;
-      border-radius: 8px;
-    }
-
-    .impact-folder h3 {
-      font-size: 1.2rem;
-      color: #42a5f5;
-      margin-bottom: 10px;
-    }
-
-    .event {
-      padding: 10px;
-      background-color: #1e1e1e;
-      margin-bottom: 8px;
-      border-radius: 6px;
-    }
-
-    .event-time {
-      font-weight: 600;
-      color: #ffb300;
-    }
   </style>
 </head>
 <body>
   <h1>📊 COT Data & Forex Market Overview - February 13, 2025</h1>
-  <div class="info-section">
-    <p>Welcome to this week’s Commitments of Traders (COT) data report and forex market overview. This comprehensive summary provides insight into institutional positioning and currency pair sentiments, supporting informed trading decisions. Analyze key metrics, anticipate market moves, and stay ahead with up-to-date data.</p>
-  </div>
 
   <h2>🗂️ Individual Currencies Sentiments</h2>
   <table>
@@ -134,41 +93,54 @@
     <tbody id="forex-pairs-body"></tbody>
   </table>
 
-  <div class="calendar-section">
-    <h2>📅 Economic Calendar (UTC +8)</h2>
-
-    <div class="impact-folder">
-      <h3>🔵 Low Impact Events</h3>
-      <div class="event"><span class="event-time">Feb 19, 10:00 AM:</span> AUD Consumer Sentiment Index</div>
-      <div class="event"><span class="event-time">Feb 20, 2:30 PM:</span> EUR Construction Output MoM</div>
-    </div>
-
-    <div class="impact-folder">
-      <h3>🟡 Medium Impact Events</h3>
-      <div class="event"><span class="event-time">Feb 21, 4:00 PM:</span> GBP Retail Sales Data</div>
-      <div class="event"><span class="event-time">Feb 22, 5:30 PM:</span> CAD New Housing Price Index</div>
-    </div>
-
-    <div class="impact-folder">
-      <h3>🔴 High Impact Events</h3>
-      <div class="event"><span class="event-time">Feb 22, 9:00 PM:</span> USD FOMC Meeting Minutes</div>
-      <div class="event"><span class="event-time">Feb 23, 8:30 PM:</span> NZD CPI QoQ Release</div>
-      <div class="event"><span class="event-time">Feb 23, 10:00 PM:</span> EUR ECB Monetary Policy Statement</div>
-    </div>
-  </div>
+  <h2>📅 Economic Calendar (UTC +8)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Date & Time</th>
+        <th>USD</th>
+        <th>EUR</th>
+        <th>GBP</th>
+        <th>JPY</th>
+        <th>AUD</th>
+        <th>NZD</th>
+        <th>CAD</th>
+        <th>CHF</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Feb 19, 10:00 AM</td>
+        <td>-</td><td>-</td><td>-</td><td>-</td><td>AUD Consumer Sentiment Index</td><td>-</td><td>-</td><td>-</td>
+      </tr>
+      <tr>
+        <td>Feb 20, 2:30 PM</td>
+        <td>-</td><td>EUR Construction Output MoM</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>
+      </tr>
+      <tr>
+        <td>Feb 21, 4:00 PM</td>
+        <td>-</td><td>-</td><td>GBP Retail Sales Data</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>
+      </tr>
+      <tr>
+        <td>Feb 22, 5:30 PM</td>
+        <td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>CAD New Housing Price Index</td><td>-</td>
+      </tr>
+      <tr>
+        <td>Feb 22, 9:00 PM</td>
+        <td>USD FOMC Meeting Minutes</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>
+      </tr>
+      <tr>
+        <td>Feb 23, 8:30 PM</td>
+        <td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>NZD CPI QoQ Release</td><td>-</td><td>-</td>
+      </tr>
+      <tr>
+        <td>Feb 23, 10:00 PM</td>
+        <td>-</td><td>EUR ECB Monetary Policy Statement</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>
+      </tr>
+    </tbody>
+  </table>
 
   <script>
-    const individualCurrencies = [
-      { currency: 'USD', long: 29300, short: 18250 },
-      { currency: 'EUR', long: 16450, short: 22300 },
-      { currency: 'GBP', long: 20800, short: 14800 },
-      { currency: 'JPY', long: 25700, short: 24950 },
-      { currency: 'AUD', long: 13900, short: 12450 },
-      { currency: 'NZD', long: 11200, short: 9700 },
-      { currency: 'CAD', long: 15100, short: 16500 },
-      { currency: 'CHF', long: 13150, short: 15600 }
-    ];
-
     const forexPairs = [
       { pair: 'AUD/CHF', sentiment: 'Bearish' },
       { pair: 'AUD/JPY', sentiment: 'Bearish' },
@@ -180,6 +152,7 @@
       { pair: 'EUR/CAD', sentiment: 'Bearish' },
       { pair: 'EUR/GBP', sentiment: 'Neutral' },
       { pair: 'EUR/NZD', sentiment: 'Bearish' },
+      { pair: 'EUR/JPY', sentiment: 'Bearish' },
       { pair: 'GBP/AUD', sentiment: 'Bullish' },
       { pair: 'GBP/JPY', sentiment: 'Bullish' },
       { pair: 'GBP/CAD', sentiment: 'Bullish' },
@@ -197,32 +170,9 @@
       { pair: 'USD/CHF', sentiment: 'Bearish' }
     ];
 
-    const renderTable = (data, tbodyId, isCurrencyTable = false) => {
-      const tbody = document.getElementById(tbodyId);
-      tbody.innerHTML = '';
-
-      data.forEach((item) => {
-        const sentimentClass = item.sentiment?.toLowerCase() || ((item.long - item.short) > 0 ? 'bullish' : (item.long - item.short) < 0 ? 'bearish' : 'neutral');
-
-        const row = isCurrencyTable
-          ? `<tr class="${sentimentClass}">
-              <td>${item.currency}</td>
-              <td>${item.long.toLocaleString()}</td>
-              <td>${item.short.toLocaleString()}</td>
-              <td>${(item.long - item.short).toLocaleString()}</td>
-              <td>${sentimentClass.charAt(0).toUpperCase() + sentimentClass.slice(1)}</td>
-            </tr>`
-          : `<tr class="${sentimentClass}">
-              <td>${item.pair}</td>
-              <td>${item.sentiment}</td>
-            </tr>`;
-
-        tbody.insertAdjacentHTML('beforeend', row);
-      });
-    };
-
-    renderTable(individualCurrencies, 'individual-currencies-body', true);
-    renderTable(forexPairs, 'forex-pairs-body');
+    const tbody = document.getElementById('forex-pairs-body');
+    tbody.innerHTML = forexPairs.map(({ pair, sentiment }) => 
+      `<tr class="${sentiment.toLowerCase()}"><td>${pair}</td><td>${sentiment}</td></tr>`).join('');
   </script>
 </body>
 </html>
