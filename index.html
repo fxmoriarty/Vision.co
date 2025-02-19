@@ -84,6 +84,9 @@ Track accurate economic indicators, COT data, market sentiment, commodity prices
         <th>Bond Yield Spread</th>
         <th>Commodity Prices</th>
         <th>Volatility Index</th>
+        <th>COT Net Position</th>
+        <th>COT Long/Short Ratio</th>
+        <th>Contrarian Signal</th>
         <th>50-200 MA Cross</th>
         <th>RSI</th>
         <th>MACD</th>
@@ -102,8 +105,13 @@ const pairs = [
 ];
 
 const fetchData = async () => {
-  const data = await fetch('https://api.forexdatahub.com/indicators').then(res => res.json());
-  renderEconomicTable(data);
+  try {
+    const response = await fetch('https://api.forexdatahub.com/accurate-indicators');
+    const data = await response.json();
+    renderEconomicTable(data);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
 };
 
 const getSignalClass = (signal) => {
@@ -128,6 +136,9 @@ const renderEconomicTable = (data) => {
       <td>${d.bondYieldSpread ?? '-'}</td>
       <td>${d.commodityPrices ?? '-'}</td>
       <td>${d.volatilityIndex ?? '-'}</td>
+      <td class="${getSignalClass(d.cotNetPositionSignal)}">${d.cotNetPosition ?? '-'}</td>
+      <td class="${getSignalClass(d.cotLongShortRatioSignal)}">${d.cotLongShortRatio ?? '-'}</td>
+      <td class="${getSignalClass(d.contrarianSignal)}">${d.contrarianSignal?.toUpperCase() ?? '-'}</td>
       <td>${d.maCross ?? '-'}</td>
       <td>${d.rsi ?? '-'}</td>
       <td>${d.macd ?? '-'}</td>
