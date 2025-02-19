@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Forex Edge Dashboard - Economic Indicators & Top Setups</title>
+<title>Forex Edge Dashboard - Economic Indicators & COT Data</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
@@ -20,16 +20,6 @@ h1, h2 {
   font-size: 2rem;
   color: #f1f1f1;
   margin-bottom: 20px;
-}
-
-.info-section {
-  background-color: #263238;
-  border-left: 6px solid #42a5f5;
-  padding: 16px;
-  border-radius: 10px;
-  font-size: 1rem;
-  margin-top: 20px;
-  color: #cfd8dc;
 }
 
 .table-container {
@@ -65,25 +55,19 @@ tr:hover {
   background-color: #2a2a2a;
 }
 
-.very-bullish { background-color: #1b5e20; color: #ffffff; font-weight: bold; }
-.bullish { background-color: #388e3c; color: #ffffff; font-weight: bold; }
-.neutral { background-color: #ffb300; color: #1c1c1c; font-weight: bold; }
-.bearish { background-color: #d32f2f; color: #ffffff; font-weight: bold; }
-.very-bearish { background-color: #b71c1c; color: #ffffff; font-weight: bold; }
+/* Color Coding */
+.cpi-high, .interest-high, .gdp-high { background-color: #b71c1c; color: #ffffff; font-weight: bold; }
+.cpi-medium, .interest-medium, .gdp-medium { background-color: #ffb300; color: #1c1c1c; font-weight: bold; }
+.cpi-low, .interest-low, .gdp-low { background-color: #1b5e20; color: #ffffff; font-weight: bold; }
+.pmi-high { background-color: #1b5e20; color: #ffffff; font-weight: bold; }
+.pmi-low { background-color: #b71c1c; color: #ffffff; font-weight: bold; }
+.cot-positive { background-color: #1b5e20; color: #ffffff; font-weight: bold; }
+.cot-negative { background-color: #b71c1c; color: #ffffff; font-weight: bold; }
 </style>
 </head>
 <body>
 
-<h1>📊 Forex Edge Dashboard - Economic Indicators & Top Setups</h1>
-<div class="info-section">
-  <strong>Note:</strong> Rows are color-coded based on sentiment score: 
-  <span class="very-bullish">Very Bullish</span>, 
-  <span class="bullish">Bullish</span>, 
-  <span class="neutral">Neutral</span>, 
-  <span class="bearish">Bearish</span>, 
-  <span class="very-bearish">Very Bearish</span>. Data is based on the latest COT reports, CPI, PPI, PMI, interest rates, and GDP figures.
-</div>
-
+<h1>📊 Forex Edge Dashboard - Economic Indicators & COT Data</h1>
 <div class="table-container">
   <h2>💹 Individual Currencies - Long & Short Contracts</h2>
   <table>
@@ -100,11 +84,11 @@ tr:hover {
 </div>
 
 <div class="table-container">
-  <h2>📈 Economic Indicators Table</h2>
+  <h2>📈 Economic Indicators Table (CPI, PPI, Interest Rate, PMI, GDP)</h2>
   <table>
     <thead>
       <tr>
-        <th>Currency</th>
+        <th>Currency Pair</th>
         <th>CPI (%)</th>
         <th>PPI (%)</th>
         <th>Interest Rate (%)</th>
@@ -116,60 +100,47 @@ tr:hover {
   </table>
 </div>
 
-<div class="table-container">
-  <h2>🚀 Top Currency Pair Setups - Bullish/Bearish Ratings</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Currency Pair</th>
-        <th>Sentiment</th>
-      </tr>
-    </thead>
-    <tbody id="forex-pairs-body"></tbody>
-  </table>
-</div>
-
 <script>
-// Sample real-time-like data placeholders (replace with actual API data in production)
 const currencies = [
-  { currency: 'USD', long: 31200, short: 19800 },
-  { currency: 'EUR', long: 22800, short: 24500 },
-  { currency: 'AUD', long: 15300, short: 14000 },
-  { currency: 'NZD', long: 11800, short: 12500 },
-  { currency: 'GBP', long: 21700, short: 14200 },
-  { currency: 'CAD', long: 15800, short: 17500 },
-  { currency: 'JPY', long: 24600, short: 23800 },
-  { currency: 'CHF', long: 13600, short: 15000 }
+  { currency: 'USD', long: 32000, short: 18000 },
+  { currency: 'EUR', long: 25000, short: 24000 },
+  { currency: 'AUD', long: 16000, short: 15000 },
+  { currency: 'NZD', long: 12000, short: 13000 },
+  { currency: 'GBP', long: 22000, short: 14000 },
+  { currency: 'CAD', long: 15500, short: 17000 },
+  { currency: 'JPY', long: 24000, short: 23000 },
+  { currency: 'CHF', long: 14000, short: 14500 }
 ];
 
 const economicIndicators = [
-  { currency: 'USD', cpi: 3.4, ppi: 2.7, interestRate: 5.25, pmi: 53.2, gdp: 2.2 },
-  { currency: 'EUR', cpi: 2.8, ppi: 2.3, interestRate: 4.00, pmi: 48.1, gdp: 1.2 },
-  { currency: 'AUD', cpi: 3.6, ppi: 3.0, interestRate: 4.35, pmi: 50.7, gdp: 1.9 },
-  { currency: 'NZD', cpi: 3.2, ppi: 2.6, interestRate: 5.50, pmi: 49.4, gdp: 1.6 },
-  { currency: 'GBP', cpi: 4.1, ppi: 3.2, interestRate: 5.00, pmi: 51.4, gdp: 1.8 },
-  { currency: 'CAD', cpi: 3.1, ppi: 2.5, interestRate: 4.75, pmi: 50.0, gdp: 1.5 },
-  { currency: 'JPY', cpi: 2.1, ppi: 1.6, interestRate: -0.10, pmi: 47.8, gdp: 0.9 },
-  { currency: 'CHF', cpi: 1.8, ppi: 1.4, interestRate: 1.75, pmi: 50.3, gdp: 1.3 }
+  { pair: 'AUDCHF', cpi: 3.6, ppi: 3.0, interestRate: 4.35, pmi: 50.7, gdp: 1.9 },
+  { pair: 'AUDJPY', cpi: 3.6, ppi: 3.0, interestRate: 4.35, pmi: 50.7, gdp: 1.9 },
+  { pair: 'AUDUSD', cpi: 3.6, ppi: 3.0, interestRate: 4.35, pmi: 50.7, gdp: 1.9 },
+  { pair: 'AUDNZD', cpi: 3.6, ppi: 3.0, interestRate: 4.35, pmi: 50.7, gdp: 1.9 },
+  { pair: 'AUDCAD', cpi: 3.6, ppi: 3.0, interestRate: 4.35, pmi: 50.7, gdp: 1.9 },
+  { pair: 'EURUSD', cpi: 2.8, ppi: 2.3, interestRate: 4.00, pmi: 48.1, gdp: 1.2 },
+  { pair: 'EURCAD', cpi: 2.8, ppi: 2.3, interestRate: 4.00, pmi: 48.1, gdp: 1.2 },
+  { pair: 'EURAUD', cpi: 2.8, ppi: 2.3, interestRate: 4.00, pmi: 48.1, gdp: 1.2 },
+  { pair: 'EURJPY', cpi: 2.8, ppi: 2.3, interestRate: 4.00, pmi: 48.1, gdp: 1.2 },
+  { pair: 'EURNZD', cpi: 2.8, ppi: 2.3, interestRate: 4.00, pmi: 48.1, gdp: 1.2 },
+  { pair: 'EURGBP', cpi: 2.8, ppi: 2.3, interestRate: 4.00, pmi: 48.1, gdp: 1.2 },
+  { pair: 'GBPCAD', cpi: 4.1, ppi: 3.2, interestRate: 5.00, pmi: 51.4, gdp: 1.8 },
+  { pair: 'GBPCHF', cpi: 4.1, ppi: 3.2, interestRate: 5.00, pmi: 51.4, gdp: 1.8 },
+  { pair: 'GBPAUD', cpi: 4.1, ppi: 3.2, interestRate: 5.00, pmi: 51.4, gdp: 1.8 },
+  { pair: 'GBPUSD', cpi: 4.1, ppi: 3.2, interestRate: 5.00, pmi: 51.4, gdp: 1.8 },
+  { pair: 'GBPJPY', cpi: 4.1, ppi: 3.2, interestRate: 5.00, pmi: 51.4, gdp: 1.8 },
+  { pair: 'NZDCAD', cpi: 3.2, ppi: 2.6, interestRate: 5.50, pmi: 49.4, gdp: 1.6 },
+  { pair: 'NZDJPY', cpi: 3.2, ppi: 2.6, interestRate: 5.50, pmi: 49.4, gdp: 1.6 },
+  { pair: 'NZDUSD', cpi: 3.2, ppi: 2.6, interestRate: 5.50, pmi: 49.4, gdp: 1.6 },
+  { pair: 'CADCHF', cpi: 3.1, ppi: 2.5, interestRate: 4.75, pmi: 50.0, gdp: 1.5 },
+  { pair: 'CADJPY', cpi: 3.1, ppi: 2.5, interestRate: 4.75, pmi: 50.0, gdp: 1.5 },
+  { pair: 'CHFJPY', cpi: 1.8, ppi: 1.4, interestRate: 1.75, pmi: 50.3, gdp: 1.3 },
+  { pair: 'USDCAD', cpi: 3.4, ppi: 2.7, interestRate: 5.25, pmi: 53.2, gdp: 2.2 },
+  { pair: 'USDCHF', cpi: 3.4, ppi: 2.7, interestRate: 5.25, pmi: 53.2, gdp: 2.2 },
+  { pair: 'USDJPY', cpi: 3.4, ppi: 2.7, interestRate: 5.25, pmi: 53.2, gdp: 2.2 }
 ];
 
-const forexPairs = [
-  { pair: 'AUDUSD', sentiment: 'Bullish' },
-  { pair: 'EURUSD', sentiment: 'Bearish' },
-  { pair: 'GBPUSD', sentiment: 'Very Bullish' },
-  { pair: 'USDJPY', sentiment: 'Bullish' },
-  { pair: 'USDCHF', sentiment: 'Neutral' },
-  { pair: 'NZDUSD', sentiment: 'Bullish' },
-  { pair: 'AUDJPY', sentiment: 'Bearish' },
-  { pair: 'EURAUD', sentiment: 'Bearish' },
-  { pair: 'EURJPY', sentiment: 'Neutral' },
-  { pair: 'GBPJPY', sentiment: 'Very Bullish' },
-  { pair: 'GBPAUD', sentiment: 'Bullish' },
-  { pair: 'CADJPY', sentiment: 'Bullish' },
-  { pair: 'AUDCAD', sentiment: 'Neutral' },
-  { pair: 'USDCAD', sentiment: 'Bearish' },
-  { pair: 'CHFJPY', sentiment: 'Neutral' }
-];
+const getClass = (value, high, medium) => value >= high ? 'cpi-high' : value >= medium ? 'cpi-medium' : 'cpi-low';
 
 const renderTable = (tbodyId, data, rowGenerator) => {
   const tbody = document.getElementById(tbodyId);
@@ -179,17 +150,20 @@ const renderTable = (tbodyId, data, rowGenerator) => {
 
 renderTable('currencies-body', currencies, ({ currency, long, short }) => {
   const net = long - short;
-  return `<tr><td>${currency}</td><td>${long.toLocaleString()}</td><td>${short.toLocaleString()}</td><td>${net.toLocaleString()}</td></tr>`;
+  const netClass = net >= 0 ? 'cot-positive' : 'cot-negative';
+  return `<tr><td>${currency}</td><td>${long.toLocaleString()}</td><td>${short.toLocaleString()}</td><td class="${netClass}">${net.toLocaleString()}</td></tr>`;
 });
 
-renderTable('economic-indicators-body', economicIndicators, ({ currency, cpi, ppi, interestRate, pmi, gdp }) => 
-  `<tr><td>${currency}</td><td>${cpi.toFixed(1)}</td><td>${ppi.toFixed(1)}</td><td>${interestRate.toFixed(2)}</td><td>${pmi.toFixed(1)}</td><td>${gdp.toFixed(1)}</td></tr>`
-);
-
-renderTable('forex-pairs-body', forexPairs, ({ pair, sentiment }) => {
-  const sentimentClass = sentiment.toLowerCase().replace(' ', '-');
-  return `<tr class="${sentimentClass}"><td>${pair}</td><td>${sentiment}</td></tr>`;
-});
+renderTable('economic-indicators-body', economicIndicators, ({ pair, cpi, ppi, interestRate, pmi, gdp }) => `
+  <tr>
+    <td>${pair}</td>
+    <td class="${getClass(cpi, 3.5, 2.5)}">${cpi.toFixed(1)}</td>
+    <td>${ppi.toFixed(1)}</td>
+    <td class="${getClass(interestRate, 4.5, 3.0)}">${interestRate.toFixed(2)}</td>
+    <td class="${pmi >= 50 ? 'pmi-high' : 'pmi-low'}">${pmi.toFixed(1)}</td>
+    <td class="${getClass(gdp, 2.0, 1.0)}">${gdp.toFixed(1)}</td>
+  </tr>
+`);
 </script>
 
 </body>
