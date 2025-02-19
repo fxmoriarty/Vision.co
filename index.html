@@ -64,7 +64,7 @@ tr:hover {
 
 <h1>📊 Forex Edge Dashboard - Comprehensive Market Insights</h1>
 <p style="text-align:center; max-width:800px; margin:0 auto; font-size:1rem;">
-Track accurate economic indicators, COT data, market sentiment, commodity prices, and technical analysis to make informed trading decisions.
+Track accurate economic indicators, COT data for individual currencies, market sentiment, commodity prices, and technical analysis to make informed trading decisions.
 </p>
 
 <div class="table-container">
@@ -97,6 +97,22 @@ Track accurate economic indicators, COT data, market sentiment, commodity prices
   </table>
 </div>
 
+<div class="table-container">
+  <h2>📝 COT Data for Major Currencies (USD, EUR, GBP, CAD, JPY, AUD, NZD, CHF)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Currency</th>
+        <th>Net Position</th>
+        <th>Long Contracts</th>
+        <th>Short Contracts</th>
+        <th>Sentiment</th>
+      </tr>
+    </thead>
+    <tbody id="cot-data"></tbody>
+  </table>
+</div>
+
 <script>
 const pairs = [
   'AUDCHF','AUDJPY','AUDUSD','AUDNZD','AUDCAD','EURUSD','EURCAD','EURAUD','EURJPY','EURNZD','EURGBP',
@@ -104,11 +120,20 @@ const pairs = [
   'USDCAD','USDCHF','USDJPY'
 ];
 
+const majorCurrencies = ['USD', 'EUR', 'GBP', 'CAD', 'JPY', 'AUD', 'NZD', 'CHF'];
+
 const fetchData = async () => {
   try {
-    const response = await fetch('https://api.forexdatahub.com/accurate-indicators');
-    const data = await response.json();
-    renderEconomicTable(data);
+    const [economicRes, cotRes] = await Promise.all([
+      fetch('https://api.forexdatahub.com/accurate-indicators'),
+      fetch('https://api.forexdatahub.com/cot-data')
+    ]);
+
+    const economicData = await economicRes.json();
+    const cotData = await cotRes.json();
+
+    renderEconomicTable(economicData);
+    renderCOTTable(cotData);
   } catch (error) {
     console.error('Error fetching data:', error);
   }
@@ -121,8 +146,6 @@ const getSignalClass = (signal) => {
 const renderEconomicTable = (data) => {
   const rows = pairs.map(pair => {
     const d = data[pair] || {};
-    const signalClass = getSignalClass(d.signal || 'neutral');
-
     return `<tr>
       <td>${pair}</td>
       <td>${d.cpi ?? '-'}</td>
@@ -142,10 +165,24 @@ const renderEconomicTable = (data) => {
       <td>${d.maCross ?? '-'}</td>
       <td>${d.rsi ?? '-'}</td>
       <td>${d.macd ?? '-'}</td>
-      <td class="${signalClass}">${d.signal?.toUpperCase() ?? '-'}</td>
+      <td class="${getSignalClass(d.signal)}">${d.signal?.toUpperCase() ?? '-'}</td>
     </tr>`;
   });
   document.getElementById('economic-data').innerHTML = rows.join('');
+};
+
+const renderCOTTable = (data) => {
+  const rows = majorCurrencies.map(currency => {
+    const d = data[currency] || {};
+    return `<tr>
+      <td>${currency}</td>
+      <td class="${getSignalClass(d.sentiment)}">${d.netPosition ?? '-'}</td>
+      <td>${d.longContracts ?? '-'}</td>
+      <td>${d.shortContracts ?? '-'}</td>
+      <td class="${getSignalClass(d.sentiment)}">${d.sentiment?.toUpperCase() ?? '-'}</td>
+    </tr>`;
+  });
+  document.getElementById('cot-data').innerHTML = rows.join('');
 };
 
 fetchData();
