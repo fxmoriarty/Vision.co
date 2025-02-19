@@ -1,1 +1,129 @@
 <link rel="stylesheet" href="dex.css">
+/* ==========================
+   🎨 DEX THEME - STYLE GUIDE
+   Author: Lord Moriarty
+   Description: Professional, sleek dark theme with modern typography.
+   ========================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+:root {
+  /* 🎨 Color Palette */
+  --dex-bg-dark: #121212;
+  --dex-bg-medium: #1e1e1e;
+  --dex-bg-light: #263238;
+  --dex-primary: #42a5f5;
+  --dex-secondary: #ffb300;
+  --dex-success: #2e7d32;
+  --dex-danger: #c62828;
+  --dex-neutral: #ffb300;
+  --dex-hover: #2a2a2a;
+  --dex-border: #2c2c2c;
+  --dex-text-main: #e0e0e0;
+  --dex-text-heading: #f1f1f1;
+  --dex-text-muted: #cfd8dc;
+
+  /* 📝 Typography */
+  --dex-font-family: 'Inter', sans-serif;
+  --dex-heading-size: 1.9rem;
+  --dex-body-size: 0.95rem;
+  --dex-letter-spacing: 0.6px;
+}
+
+body {
+  font-family: var(--dex-font-family);
+  background-color: var(--dex-bg-dark);
+  color: var(--dex-text-main);
+  padding: 20px;
+  line-height: 1.6;
+}
+
+h1, h2 {
+  text-align: center;
+  font-size: var(--dex-heading-size);
+  color: var(--dex-text-heading);
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: var(--dex-bg-medium);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+th, td {
+  padding: 14px 16px;
+  text-align: center;
+  font-size: var(--dex-body-size);
+  border-bottom: 1px solid var(--dex-border);
+}
+
+th {
+  background: linear-gradient(135deg, #2a2a2a, #3a3a3a);
+  color: #ffffff;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: var(--dex-letter-spacing);
+}
+
+tr:hover {
+  background-color: var(--dex-hover);
+}
+
+/* 🌱 Sentiment Colors */
+.bullish { background-color: var(--dex-success); color: #ffffff; font-weight: bold; }
+.bearish { background-color: var(--dex-danger); color: #ffffff; font-weight: bold; }
+.neutral { background-color: var(--dex-neutral); color: #1c1c1c; font-weight: bold; }
+
+/* ℹ️ Info Box */
+.info-section {
+  background-color: var(--dex-bg-light);
+  border-left: 6px solid var(--dex-primary);
+  padding: 16px;
+  border-radius: 10px;
+  font-size: 1rem;
+  margin-top: 20px;
+  color: var(--dex-text-muted);
+}
+
+/* 📅 Economic Calendar */
+.calendar-section {
+  margin-top: 40px;
+  padding: 20px;
+  background-color: var(--dex-bg-medium);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.calendar-section h2 {
+  margin-bottom: 15px;
+}
+
+.impact-folder {
+  margin-top: 15px;
+  background-color: var(--dex-bg-light);
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.impact-folder h3 {
+  font-size: 1.2rem;
+  color: var(--dex-primary);
+  margin-bottom: 10px;
+}
+
+.event {
+  padding: 10px;
+  background-color: var(--dex-bg-medium);
+  margin-bottom: 8px;
+  border-radius: 6px;
+}
+
+.event-time {
+  font-weight: 600;
+  color: var(--dex-secondary);
+}
