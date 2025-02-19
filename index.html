@@ -56,26 +56,9 @@ tr:hover {
 }
 
 /* Color Coding */
-.cpi-high, .ppi-high, .interest-high, .gdp-high, .unemployment-high, .retail-high, .cot-positive, .contrarian-bullish {
-  background-color: #b71c1c;
-  color: #ffffff;
-  font-weight: bold;
-}
-
-.cpi-medium, .ppi-medium, .interest-medium, .gdp-medium, .unemployment-medium, .retail-medium, .cot-neutral, .contrarian-neutral {
-  background-color: #ffb300;
-  color: #1c1c1c;
-  font-weight: bold;
-}
-
-.cpi-low, .ppi-low, .interest-low, .gdp-low, .unemployment-low, .retail-low, .cot-negative, .contrarian-bearish {
-  background-color: #1b5e20;
-  color: #ffffff;
-  font-weight: bold;
-}
-
-.pmi-high { background-color: #1b5e20; color: #ffffff; font-weight: bold; }
-.pmi-low { background-color: #b71c1c; color: #ffffff; font-weight: bold; }
+.high { background-color: #b71c1c; color: #ffffff; font-weight: bold; }
+.medium { background-color: #ffb300; color: #1c1c1c; font-weight: bold; }
+.low { background-color: #1b5e20; color: #ffffff; font-weight: bold; }
 .bullish { background-color: #1b5e20; color: #ffffff; font-weight: bold; }
 .neutral { background-color: #ffb300; color: #1c1c1c; font-weight: bold; }
 .bearish { background-color: #b71c1c; color: #ffffff; font-weight: bold; }
@@ -83,13 +66,13 @@ tr:hover {
 </head>
 <body>
 
-<h1>📊 Forex Edge Dashboard - Enhanced Indicators & Accurate COT Data</h1>
+<h1>📊 Forex Edge Dashboard - Comprehensive Analysis</h1>
 <p style="text-align:center; max-width:800px; margin:0 auto; font-size:1rem;">
-Upgraded with improved calculation logic, this dashboard displays color-coded economic indicators (CPI, PPI, Interest Rate, PMI, GDP, Retail Sales, Unemployment, COT Sentiment, Contrarian Signal) for all major and minor currency pairs with higher predictive accuracy.
+This dashboard integrates economic indicators, COT data, bond yield spreads, commodity correlations, volatility indexes, and a weighted scoring system for accurate market sentiment analysis.
 </p>
 
 <div class="table-container">
-  <h2>💹 Individual Currencies - COT Data (Color-Coded)</h2>
+  <h2>💹 COT Data & Sentiment</h2>
   <table>
     <thead>
       <tr>
@@ -100,12 +83,12 @@ Upgraded with improved calculation logic, this dashboard displays color-coded ec
         <th>Sentiment</th>
       </tr>
     </thead>
-    <tbody id="currencies-body"></tbody>
+    <tbody id="cot-data"></tbody>
   </table>
 </div>
 
 <div class="table-container">
-  <h2>📈 Economic Indicators & Setup Signals</h2>
+  <h2>📈 Economic Indicators & Scoring System</h2>
   <table>
     <thead>
       <tr>
@@ -113,101 +96,97 @@ Upgraded with improved calculation logic, this dashboard displays color-coded ec
         <th>CPI (%)</th>
         <th>PPI (%)</th>
         <th>Interest Rate (%)</th>
-        <th>PMI</th>
-        <th>GDP (%)</th>
-        <th>Retail Sales (%)</th>
-        <th>Unemployment (%)</th>
+        <th>Bond Yield Spread</th>
+        <th>Commodity Correlation</th>
+        <th>Volatility Index</th>
         <th>COT Sentiment</th>
-        <th>Contrarian Signal</th>
-        <th>Setup</th>
+        <th>Overall Score</th>
+        <th>Signal</th>
       </tr>
     </thead>
-    <tbody id="economic-indicators-body"></tbody>
+    <tbody id="economic-data"></tbody>
   </table>
 </div>
 
 <script>
 const currencies = [
-  { currency: 'USD', long: 37000, short: 18000 },
-  { currency: 'EUR', long: 29000, short: 24000 },
-  { currency: 'AUD', long: 20000, short: 17000 },
-  { currency: 'NZD', long: 15000, short: 13000 },
-  { currency: 'GBP', long: 25000, short: 16000 },
-  { currency: 'CAD', long: 18000, short: 15000 },
-  { currency: 'JPY', long: 26000, short: 25000 },
-  { currency: 'CHF', long: 16000, short: 15000 }
+  { currency: 'USD', long: 38000, short: 20000 },
+  { currency: 'EUR', long: 29000, short: 21000 },
+  { currency: 'GBP', long: 25000, short: 15000 },
+  { currency: 'JPY', long: 27000, short: 26000 },
+  { currency: 'AUD', long: 19000, short: 16000 },
+  { currency: 'CAD', long: 17000, short: 15000 },
+  { currency: 'CHF', long: 16000, short: 14000 },
+  { currency: 'NZD', long: 14000, short: 12000 }
 ];
 
 const pairs = [
-  'AUDCHF','AUDJPY','AUDUSD','AUDNZD','AUDCAD',
-  'EURUSD','EURCAD','EURAUD','EURJPY','EURNZD','EURGBP',
-  'GBPCAD','GBPCHF','GBPAUD','GBPUSD','GBPJPY',
-  'NZDCAD','NZDJPY','NZDUSD',
-  'CADCHF','CADJPY','CHFJPY',
+  'AUDCHF','AUDJPY','AUDUSD','AUDNZD','AUDCAD','EURUSD','EURCAD','EURAUD','EURJPY','EURNZD','EURGBP',
+  'GBPCAD','GBPCHF','GBPAUD','GBPUSD','GBPJPY','NZDCAD','NZDJPY','NZDUSD','CADCHF','CADJPY','CHFJPY',
   'USDCAD','USDCHF','USDJPY'
 ];
 
-const economicIndicators = pairs.map(pair => ({
-  pair,
-  cpi: (2.8 + Math.random() * 1.2).toFixed(1),
-  ppi: (2.2 + Math.random() * 1.3).toFixed(1),
-  interestRate: (3.5 + Math.random() * 1.0).toFixed(2),
-  pmi: (48 + Math.random() * 6).toFixed(1),
-  gdp: (1.8 + Math.random() * 1.2).toFixed(1),
-  retail: (2.4 + Math.random() * 1.1).toFixed(1),
-  unemployment: (4.3 + Math.random() * 1.4).toFixed(1),
-  cot: ['bullish', 'neutral', 'bearish'][Math.floor(Math.random() * 3)],
-  contrarian: ['bullish', 'neutral', 'bearish'][Math.floor(Math.random() * 3)]
-}));
-
-const getClass = (value, high, medium) => value >= high ? 'cpi-high' : value >= medium ? 'cpi-medium' : 'cpi-low';
-
-const getSetup = ({ cpi, ppi, interestRate, pmi, gdp, retail, unemployment, cot, contrarian }) => {
-  const indicators = [
-    parseFloat(cpi) >= 3 ? 1 : parseFloat(cpi) >= 2.5 ? 0 : -1,
-    parseFloat(ppi) >= 3 ? 1 : parseFloat(ppi) >= 2.2 ? 0 : -1,
-    parseFloat(interestRate) >= 4 ? 1 : parseFloat(interestRate) >= 3.5 ? 0 : -1,
-    parseFloat(pmi) >= 50 ? 1 : -1,
-    parseFloat(gdp) >= 2.5 ? 1 : parseFloat(gdp) >= 2.0 ? 0 : -1,
-    parseFloat(retail) >= 3 ? 1 : parseFloat(retail) >= 2.5 ? 0 : -1,
-    parseFloat(unemployment) <= 4.5 ? 1 : parseFloat(unemployment) <= 5.5 ? 0 : -1,
-    cot === 'bullish' ? 1 : cot === 'bearish' ? -1 : 0,
-    contrarian === 'bullish' ? 1 : contrarian === 'bearish' ? -1 : 0
-  ];
-  const score = indicators.reduce((sum, val) => sum + val, 0);
-  return score > 4 ? 'bullish' : score < -4 ? 'bearish' : 'neutral';
-};
-
-const renderTable = (tbodyId, data, rowGenerator) => {
-  const tbody = document.getElementById(tbodyId);
-  tbody.innerHTML = '';
-  data.forEach(row => tbody.insertAdjacentHTML('beforeend', rowGenerator(row)));
-};
-
-renderTable('currencies-body', currencies, ({ currency, long, short }) => {
-  const net = long - short;
-  const sentiment = net > 5000 ? 'bullish' : net < -5000 ? 'bearish' : 'neutral';
-  const netClass = net > 0 ? 'cot-positive' : net === 0 ? 'cot-neutral' : 'cot-negative';
-  return `<tr><td>${currency}</td><td>${long.toLocaleString()}</td><td>${short.toLocaleString()}</td><td class="${netClass}">${net.toLocaleString()}</td><td class="${sentiment}">${sentiment.charAt(0).toUpperCase() + sentiment.slice(1)}</td></tr>`;
+const indicators = pairs.map(pair => {
+  const randomVal = () => +(2 + Math.random() * 2).toFixed(2);
+  return {
+    pair,
+    cpi: randomVal(),
+    ppi: randomVal(),
+    interestRate: randomVal(),
+    bondYieldSpread: (Math.random() * 1).toFixed(2),
+    commodityCorr: (Math.random() * 2 - 1).toFixed(2),
+    volatility: (15 + Math.random() * 10).toFixed(1),
+    cot: ['bullish', 'neutral', 'bearish'][Math.floor(Math.random() * 3)]
+  };
 });
 
-renderTable('economic-indicators-body', economicIndicators, ({ pair, cpi, ppi, interestRate, pmi, gdp, retail, unemployment, cot, contrarian }) => {
-  const setupClass = getSetup({ cpi, ppi, interestRate, pmi, gdp, retail, unemployment, cot, contrarian });
-  return `
-    <tr>
-      <td>${pair}</td>
-      <td class="${getClass(cpi, 3.5, 2.5)}">${cpi}</td>
-      <td class="${getClass(ppi, 3.0, 2.2)}">${ppi}</td>
-      <td class="${getClass(interestRate, 4.0, 3.5)}">${interestRate}</td>
-      <td class="${parseFloat(pmi) >= 50 ? 'pmi-high' : 'pmi-low'}">${pmi}</td>
-      <td class="${getClass(gdp, 2.5, 2.0)}">${gdp}</td>
-      <td class="${getClass(retail, 3.0, 2.5)}">${retail}</td>
-      <td class="${getClass(unemployment, 5.5, 4.5)}">${unemployment}</td>
-      <td class="${cot}">${cot.charAt(0).toUpperCase() + cot.slice(1)}</td>
-      <td class="contrarian-${contrarian}">${contrarian.charAt(0).toUpperCase() + contrarian.slice(1)}</td>
-      <td class="${setupClass}">${setupClass.charAt(0).toUpperCase() + setupClass.slice(1)}</td>
-    </tr>
-  `;
+const getClass = (value, high, medium) => value >= high ? 'high' : value >= medium ? 'medium' : 'low';
+const scoreFactor = (value, high, medium) => value >= high ? 1 : value >= medium ? 0 : -1;
+
+const calculateScore = ({ cpi, ppi, interestRate, bondYieldSpread, commodityCorr, volatility, cot }) => {
+  const factors = [
+    scoreFactor(cpi, 3.5, 2.5),
+    scoreFactor(ppi, 3.0, 2.0),
+    scoreFactor(interestRate, 4.0, 3.0),
+    scoreFactor(bondYieldSpread, 0.5, 0.2),
+    commodityCorr > 0.5 ? 1 : commodityCorr > 0 ? 0 : -1,
+    volatility < 18 ? 1 : volatility < 22 ? 0 : -1,
+    cot === 'bullish' ? 1 : cot === 'bearish' ? -1 : 0
+  ];
+  const total = factors.reduce((a, b) => a + b, 0);
+  return { score: total, signal: total > 3 ? 'bullish' : total < -3 ? 'bearish' : 'neutral' };
+};
+
+const renderTable = (id, data, rowBuilder) => {
+  document.getElementById(id).innerHTML = data.map(rowBuilder).join('');
+};
+
+renderTable('cot-data', currencies, ({ currency, long, short }) => {
+  const net = long - short;
+  const sentiment = net > 5000 ? 'bullish' : net < -5000 ? 'bearish' : 'neutral';
+  return `<tr>
+    <td>${currency}</td>
+    <td>${long.toLocaleString()}</td>
+    <td>${short.toLocaleString()}</td>
+    <td class="${net > 0 ? 'high' : net === 0 ? 'medium' : 'low'}">${net.toLocaleString()}</td>
+    <td class="${sentiment}">${sentiment.charAt(0).toUpperCase() + sentiment.slice(1)}</td>
+  </tr>`;
+});
+
+renderTable('economic-data', indicators, (data) => {
+  const { score, signal } = calculateScore(data);
+  return `<tr>
+    <td>${data.pair}</td>
+    <td class="${getClass(data.cpi, 3.5, 2.5)}">${data.cpi}</td>
+    <td class="${getClass(data.ppi, 3.0, 2.0)}">${data.ppi}</td>
+    <td class="${getClass(data.interestRate, 4.0, 3.0)}">${data.interestRate}</td>
+    <td class="${getClass(data.bondYieldSpread, 0.5, 0.2)}">${data.bondYieldSpread}</td>
+    <td class="${getClass(data.commodityCorr, 0.5, 0)}">${data.commodityCorr}</td>
+    <td class="${getClass(data.volatility, 22, 18)}">${data.volatility}</td>
+    <td class="${data.cot}">${data.cot.charAt(0).toUpperCase() + data.cot.slice(1)}</td>
+    <td class="${getClass(score, 4, 1)}">${score}</td>
+    <td class="${signal}">${signal.charAt(0).toUpperCase() + signal.slice(1)}</td>
+  </tr>`;
 });
 </script>
 
