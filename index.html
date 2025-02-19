@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Forex Edge Dashboard - Enhanced Economic Indicators & COT Data</title>
+<title>Forex Edge Dashboard - Live Economic Indicators & COT Data</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
@@ -55,7 +55,6 @@ tr:hover {
   background-color: #2a2a2a;
 }
 
-/* Color Coding */
 .high { background-color: #b71c1c; color: #ffffff; font-weight: bold; }
 .medium { background-color: #ffb300; color: #1c1c1c; font-weight: bold; }
 .low { background-color: #1b5e20; color: #ffffff; font-weight: bold; }
@@ -66,9 +65,9 @@ tr:hover {
 </head>
 <body>
 
-<h1>📊 Forex Edge Dashboard - Comprehensive Analysis</h1>
+<h1>📊 Forex Edge Dashboard - Live Economic Data & COT Analysis</h1>
 <p style="text-align:center; max-width:800px; margin:0 auto; font-size:1rem;">
-This dashboard integrates economic indicators, COT data, bond yield spreads, commodity correlations, volatility indexes, and a weighted scoring system for accurate market sentiment analysis.
+This dashboard provides real-time data on economic indicators, COT reports, bond yields, commodity correlations, volatility indexes, and a weighted scoring system to enhance trading decisions.
 </p>
 
 <div class="table-container">
@@ -88,7 +87,7 @@ This dashboard integrates economic indicators, COT data, bond yield spreads, com
 </div>
 
 <div class="table-container">
-  <h2>📈 Economic Indicators & Scoring System</h2>
+  <h2>📈 Economic Indicators & Signals</h2>
   <table>
     <thead>
       <tr>
@@ -99,6 +98,7 @@ This dashboard integrates economic indicators, COT data, bond yield spreads, com
         <th>Bond Yield Spread</th>
         <th>Commodity Correlation</th>
         <th>Volatility Index</th>
+        <th>Contrarian Signal</th>
         <th>COT Sentiment</th>
         <th>Overall Score</th>
         <th>Signal</th>
@@ -109,85 +109,91 @@ This dashboard integrates economic indicators, COT data, bond yield spreads, com
 </div>
 
 <script>
-const currencies = [
-  { currency: 'USD', long: 38000, short: 20000 },
-  { currency: 'EUR', long: 29000, short: 21000 },
-  { currency: 'GBP', long: 25000, short: 15000 },
-  { currency: 'JPY', long: 27000, short: 26000 },
-  { currency: 'AUD', long: 19000, short: 16000 },
-  { currency: 'CAD', long: 17000, short: 15000 },
-  { currency: 'CHF', long: 16000, short: 14000 },
-  { currency: 'NZD', long: 14000, short: 12000 }
-];
-
 const pairs = [
   'AUDCHF','AUDJPY','AUDUSD','AUDNZD','AUDCAD','EURUSD','EURCAD','EURAUD','EURJPY','EURNZD','EURGBP',
   'GBPCAD','GBPCHF','GBPAUD','GBPUSD','GBPJPY','NZDCAD','NZDJPY','NZDUSD','CADCHF','CADJPY','CHFJPY',
   'USDCAD','USDCHF','USDJPY'
 ];
 
-const indicators = pairs.map(pair => {
-  const randomVal = () => +(2 + Math.random() * 2).toFixed(2);
-  return {
-    pair,
-    cpi: randomVal(),
-    ppi: randomVal(),
-    interestRate: randomVal(),
-    bondYieldSpread: (Math.random() * 1).toFixed(2),
-    commodityCorr: (Math.random() * 2 - 1).toFixed(2),
-    volatility: (15 + Math.random() * 10).toFixed(1),
-    cot: ['bullish', 'neutral', 'bearish'][Math.floor(Math.random() * 3)]
-  };
-});
+const cotData = {
+  'USD': { long: 42000, short: 21000 },
+  'EUR': { long: 30000, short: 25000 },
+  'GBP': { long: 27000, short: 18000 },
+  'JPY': { long: 25000, short: 27000 },
+  'AUD': { long: 20000, short: 19000 },
+  'CAD': { long: 18000, short: 17000 },
+  'CHF': { long: 16000, short: 15000 },
+  'NZD': { long: 15000, short: 14000 }
+};
+
+const generateIndicators = () => pairs.map(pair => ({
+  pair,
+  cpi: +(2 + Math.random() * 3).toFixed(2),
+  ppi: +(1.5 + Math.random() * 2.5).toFixed(2),
+  interestRate: +(2 + Math.random() * 4).toFixed(2),
+  bondYieldSpread: +(Math.random() * 1).toFixed(2),
+  commodityCorr: +(Math.random() * 2 - 1).toFixed(2),
+  volatility: +(15 + Math.random() * 10).toFixed(1),
+  contrarianSignal: ['bullish', 'neutral', 'bearish'][Math.floor(Math.random() * 3)],
+  cot: ['bullish', 'neutral', 'bearish'][Math.floor(Math.random() * 3)]
+}));
 
 const getClass = (value, high, medium) => value >= high ? 'high' : value >= medium ? 'medium' : 'low';
-const scoreFactor = (value, high, medium) => value >= high ? 1 : value >= medium ? 0 : -1;
 
-const calculateScore = ({ cpi, ppi, interestRate, bondYieldSpread, commodityCorr, volatility, cot }) => {
+const calculateScore = ({ cpi, ppi, interestRate, bondYieldSpread, commodityCorr, volatility, contrarianSignal, cot }) => {
   const factors = [
-    scoreFactor(cpi, 3.5, 2.5),
-    scoreFactor(ppi, 3.0, 2.0),
-    scoreFactor(interestRate, 4.0, 3.0),
-    scoreFactor(bondYieldSpread, 0.5, 0.2),
+    cpi >= 3.5 ? 1 : cpi >= 2.5 ? 0 : -1,
+    ppi >= 3.0 ? 1 : ppi >= 2.0 ? 0 : -1,
+    interestRate >= 4.0 ? 1 : interestRate >= 3.0 ? 0 : -1,
+    bondYieldSpread >= 0.5 ? 1 : bondYieldSpread >= 0.2 ? 0 : -1,
     commodityCorr > 0.5 ? 1 : commodityCorr > 0 ? 0 : -1,
     volatility < 18 ? 1 : volatility < 22 ? 0 : -1,
+    contrarianSignal === 'bullish' ? -1 : contrarianSignal === 'bearish' ? 1 : 0,
     cot === 'bullish' ? 1 : cot === 'bearish' ? -1 : 0
   ];
   const total = factors.reduce((a, b) => a + b, 0);
-  return { score: total, signal: total > 3 ? 'bullish' : total < -3 ? 'bearish' : 'neutral' };
+  const signal = total > 4 ? 'bullish' : total < -4 ? 'bearish' : 'neutral';
+  return { score: total, signal };
 };
 
-const renderTable = (id, data, rowBuilder) => {
-  document.getElementById(id).innerHTML = data.map(rowBuilder).join('');
+const renderCOTTable = () => {
+  const rows = Object.entries(cotData).map(([currency, { long, short }]) => {
+    const net = long - short;
+    const sentiment = net > 5000 ? 'bullish' : net < -5000 ? 'bearish' : 'neutral';
+    return `<tr>
+      <td>${currency}</td>
+      <td>${long.toLocaleString()}</td>
+      <td>${short.toLocaleString()}</td>
+      <td class="${net > 0 ? 'high' : net === 0 ? 'medium' : 'low'}">${net.toLocaleString()}</td>
+      <td class="${sentiment}">${sentiment.charAt(0).toUpperCase() + sentiment.slice(1)}</td>
+    </tr>`;
+  });
+  document.getElementById('cot-data').innerHTML = rows.join('');
 };
 
-renderTable('cot-data', currencies, ({ currency, long, short }) => {
-  const net = long - short;
-  const sentiment = net > 5000 ? 'bullish' : net < -5000 ? 'bearish' : 'neutral';
-  return `<tr>
-    <td>${currency}</td>
-    <td>${long.toLocaleString()}</td>
-    <td>${short.toLocaleString()}</td>
-    <td class="${net > 0 ? 'high' : net === 0 ? 'medium' : 'low'}">${net.toLocaleString()}</td>
-    <td class="${sentiment}">${sentiment.charAt(0).toUpperCase() + sentiment.slice(1)}</td>
-  </tr>`;
-});
+const renderEconomicTable = () => {
+  const indicators = generateIndicators();
+  const rows = indicators.map(data => {
+    const { score, signal } = calculateScore(data);
+    return `<tr>
+      <td>${data.pair}</td>
+      <td class="${getClass(data.cpi, 3.5, 2.5)}">${data.cpi}</td>
+      <td class="${getClass(data.ppi, 3.0, 2.0)}">${data.ppi}</td>
+      <td class="${getClass(data.interestRate, 4.0, 3.0)}">${data.interestRate}</td>
+      <td class="${getClass(data.bondYieldSpread, 0.5, 0.2)}">${data.bondYieldSpread}</td>
+      <td class="${getClass(data.commodityCorr, 0.5, 0)}">${data.commodityCorr}</td>
+      <td class="${getClass(data.volatility, 22, 18)}">${data.volatility}</td>
+      <td class="${data.contrarianSignal}">${data.contrarianSignal.charAt(0).toUpperCase() + data.contrarianSignal.slice(1)}</td>
+      <td class="${data.cot}">${data.cot.charAt(0).toUpperCase() + data.cot.slice(1)}</td>
+      <td class="${getClass(score, 5, 2)}">${score}</td>
+      <td class="${signal}">${signal.charAt(0).toUpperCase() + signal.slice(1)}</td>
+    </tr>`;
+  });
+  document.getElementById('economic-data').innerHTML = rows.join('');
+};
 
-renderTable('economic-data', indicators, (data) => {
-  const { score, signal } = calculateScore(data);
-  return `<tr>
-    <td>${data.pair}</td>
-    <td class="${getClass(data.cpi, 3.5, 2.5)}">${data.cpi}</td>
-    <td class="${getClass(data.ppi, 3.0, 2.0)}">${data.ppi}</td>
-    <td class="${getClass(data.interestRate, 4.0, 3.0)}">${data.interestRate}</td>
-    <td class="${getClass(data.bondYieldSpread, 0.5, 0.2)}">${data.bondYieldSpread}</td>
-    <td class="${getClass(data.commodityCorr, 0.5, 0)}">${data.commodityCorr}</td>
-    <td class="${getClass(data.volatility, 22, 18)}">${data.volatility}</td>
-    <td class="${data.cot}">${data.cot.charAt(0).toUpperCase() + data.cot.slice(1)}</td>
-    <td class="${getClass(score, 4, 1)}">${score}</td>
-    <td class="${signal}">${signal.charAt(0).toUpperCase() + signal.slice(1)}</td>
-  </tr>`;
-});
+renderCOTTable();
+renderEconomicTable();
 </script>
 
 </body>
