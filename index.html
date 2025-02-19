@@ -89,6 +89,7 @@
           <th>Consumer Confidence</th>
           <th>Business Confidence</th>
           <th>Risk Sentiment</th>
+          <th>Inflation Data</th>
           <th>Overall Score</th>
           <th>Signal</th>
         </tr>
@@ -112,62 +113,65 @@
 
     // Economic data for the 23 currency pairs
     const economicData = {
-      'AUDCHF': { cpi: 3.5, ppi: 2.3, interestRate: 4.0, retailSales: 1.5, consumerConfidence: 95.5, businessConfidence: 105, riskSentiment: 'Risk-On', score: 4.5 },
-      'AUDJPY': { cpi: 3.6, ppi: 2.2, interestRate: 4.1, retailSales: 2.0, consumerConfidence: 93.0, businessConfidence: 107, riskSentiment: 'Risk-Off', score: 4.0 },
-      'AUDUSD': { cpi: 3.4, ppi: 2.1, interestRate: 4.1, retailSales: 1.8, consumerConfidence: 96.2, businessConfidence: 110, riskSentiment: 'Risk-On', score: 4.3 },
-      'EURUSD': { cpi: 2.9, ppi: 2.4, interestRate: 3.5, retailSales: 1.2, consumerConfidence: 92.0, businessConfidence: 105, riskSentiment: 'Risk-Off', score: 3.8 },
-      'GBPUSD': { cpi: 4.2, ppi: 3.1, interestRate: 4.3, retailSales: 1.5, consumerConfidence: 88.5, businessConfidence: 112, riskSentiment: 'Risk-On', score: 4.6 },
-      'USDJPY': { cpi: 3.1, ppi: 2.8, interestRate: 5.0, retailSales: 2.0, consumerConfidence: 97.0, businessConfidence: 108, riskSentiment: 'Risk-Off', score: 4.2 },
-      'EURGBP': { cpi: 3.3, ppi: 2.5, interestRate: 3.9, retailSales: 1.4, consumerConfidence: 91.5, businessConfidence: 106, riskSentiment: 'Risk-Off', score: 4.1 },
-      'EURCAD': { cpi: 2.7, ppi: 2.2, interestRate: 3.6, retailSales: 1.1, consumerConfidence: 94.0, businessConfidence: 103, riskSentiment: 'Risk-Off', score: 3.6 },
-      'GBPCAD': { cpi: 3.9, ppi: 3.0, interestRate: 4.2, retailSales: 2.2, consumerConfidence: 89.0, businessConfidence: 111, riskSentiment: 'Risk-On', score: 4.7 },
-      'AUDNZD': { cpi: 3.7, ppi: 2.3, interestRate: 4.2, retailSales: 1.4, consumerConfidence: 92.5, businessConfidence: 108, riskSentiment: 'Risk-On', score: 4.4 },
-      'AUDCAD': { cpi: 3.5, ppi: 2.4, interestRate: 3.8, retailSales: 1.6, consumerConfidence: 94.0, businessConfidence: 105, riskSentiment: 'Risk-On', score: 4.3 },
-      'EURNZD': { cpi: 3.0, ppi: 2.1, interestRate: 3.4, retailSales: 1.3, consumerConfidence: 90.0, businessConfidence: 102, riskSentiment: 'Risk-Off', score: 3.7 },
-      'NZDCAD': { cpi: 3.6, ppi: 2.5, interestRate: 4.3, retailSales: 1.8, consumerConfidence: 96.5, businessConfidence: 110, riskSentiment: 'Risk-On', score: 4.5 },
-      'NZDJPY': { cpi: 3.0, ppi: 2.0, interestRate: 4.2, retailSales: 1.7, consumerConfidence: 95.0, businessConfidence: 106, riskSentiment: 'Risk-Off', score: 4.0 },
-      'NZDUSD': { cpi: 3.3, ppi: 2.4, interestRate: 4.1, retailSales: 2.1, consumerConfidence: 98.0, businessConfidence: 109, riskSentiment: 'Risk-On', score: 4.6 },
-      'CADCHF': { cpi: 2.8, ppi: 2.3, interestRate: 3.7, retailSales: 1.5, consumerConfidence: 93.5, businessConfidence: 104, riskSentiment: 'Risk-Off', score: 3.8 },
-      'CADJPY': { cpi: 2.7, ppi: 2.0, interestRate: 3.8, retailSales: 1.4, consumerConfidence: 92.0, businessConfidence: 102, riskSentiment: 'Risk-On', score: 4.1 },
-      'CHFJPY': { cpi: 3.4, ppi: 2.2, interestRate: 4.0, retailSales: 1.9, consumerConfidence: 94.5, businessConfidence: 107, riskSentiment: 'Risk-Off', score: 4.0 },
-      'USDCAD': { cpi: 3.8, ppi: 2.9, interestRate: 4.1, retailSales: 2.3, consumerConfidence: 99.5, businessConfidence: 113, riskSentiment: 'Risk-On', score: 4.8 },
-      'USDCHF': { cpi: 3.2, ppi: 2.3, interestRate: 4.4, retailSales: 2.0, consumerConfidence: 96.5, businessConfidence: 110, riskSentiment: 'Risk-Off', score: 4.3 },
-      'GBPJPY': { cpi: 4.1, ppi: 3.2, interestRate: 4.2, retailSales: 1.9, consumerConfidence: 89.5, businessConfidence: 110, riskSentiment: 'Risk-On', score: 4.6 }
+      'AUDCHF': { cpi: 3.5, ppi: 2.3, interestRate: 4.0, retailSales: 1.5, consumerConfidence: 95.5, businessConfidence: 105, riskSentiment: 'Risk-On', inflationData: 'Moderate', score: 4.5 },
+      'AUDJPY': { cpi: 3.6, ppi: 2.2, interestRate: 4.1, retailSales: 2.0, consumerConfidence: 93.0, businessConfidence: 107, riskSentiment: 'Risk-Off', inflationData: 'Moderate', score: 4.0 },
+      'AUDUSD': { cpi: 3.4, ppi: 2.1, interestRate: 4.1, retailSales: 1.8, consumerConfidence: 96.2, businessConfidence: 110, riskSentiment: 'Risk-On', inflationData: 'Moderate', score: 4.3 },
+      'EURUSD': { cpi: 2.9, ppi: 2.4, interestRate: 3.5, retailSales: 1.2, consumerConfidence: 92.0, businessConfidence: 105, riskSentiment: 'Risk-Off', inflationData: 'Low', score: 3.8 },
+      'GBPUSD': { cpi: 4.2, ppi: 3.1, interestRate: 4.3, retailSales: 1.5, consumerConfidence: 88.5, businessConfidence: 112, riskSentiment: 'Risk-On', inflationData: 'High', score: 4.6 },
+      'USDJPY': { cpi: 3.1, ppi: 2.8, interestRate: 5.0, retailSales: 2.0, consumerConfidence: 97.0, businessConfidence: 108, riskSentiment: 'Risk-Off', inflationData: 'Moderate', score: 4.2 },
+      'EURGBP': { cpi: 3.3, ppi: 2.5, interestRate: 3.9, retailSales: 1.4, consumerConfidence: 91.5, businessConfidence: 106, riskSentiment: 'Risk-Off', inflationData: 'Moderate', score: 4.1 },
+      'EURCAD': { cpi: 2.7, ppi: 2.2, interestRate: 3.6, retailSales: 1.1, consumerConfidence: 94.0, businessConfidence: 103, riskSentiment: 'Risk-Off', inflationData: 'Low', score: 3.6 },
+      'GBPCAD': { cpi: 3.9, ppi: 3.0, interestRate: 4.2, retailSales: 2.2, consumerConfidence: 89.0, businessConfidence: 111, riskSentiment: 'Risk-On', inflationData: 'High', score: 4.7 },
+      'AUDNZD': { cpi: 3.7, ppi: 2.3, interestRate: 4.2, retailSales: 1.4, consumerConfidence: 92.5, businessConfidence: 108, riskSentiment: 'Risk-On', inflationData: 'Moderate', score: 4.4 },
+      'AUDCAD': { cpi: 3.5, ppi: 2.4, interestRate: 3.8, retailSales: 1.6, consumerConfidence: 94.0, businessConfidence: 105, riskSentiment: 'Risk-On', inflationData: 'Moderate', score: 4.3 },
+      'EURNZD': { cpi: 3.0, ppi: 2.1, interestRate: 3.4, retailSales: 1.3, consumerConfidence: 90.0, businessConfidence: 102, riskSentiment: 'Risk-Off', inflationData: 'Low', score: 3.7 },
+      'NZDCAD': { cpi: 3.6, ppi: 2.5, interestRate: 4.3, retailSales: 1.8, consumerConfidence: 96.5, businessConfidence: 110, riskSentiment: 'Risk-On', inflationData: 'Moderate', score: 4.5 },
+      'NZDJPY': { cpi: 3.0, ppi: 2.0, interestRate: 4.2, retailSales: 1.7, consumerConfidence: 95.0, businessConfidence: 106, riskSentiment: 'Risk-Off', inflationData: 'Low', score: 4.0 },
+      'NZDUSD': { cpi: 3.3, ppi: 2.4, interestRate: 4.1, retailSales: 2.1, consumerConfidence: 98.0, businessConfidence: 109, riskSentiment: 'Risk-On', inflationData: 'Moderate', score: 4.6 },
+      'CADCHF': { cpi: 2.8, ppi: 2.3, interestRate: 3.7, retailSales: 1.5, consumerConfidence: 93.5, businessConfidence: 104, riskSentiment: 'Risk-Off', inflationData: 'Low', score: 3.8 },
+      'CADJPY': { cpi: 2.7, ppi: 2.0, interestRate: 3.8, retailSales: 1.4, consumerConfidence: 92.0, businessConfidence: 102, riskSentiment: 'Risk-On', inflationData: 'Low', score: 4.1 },
+      'CHFJPY': { cpi: 3.4, ppi: 2.2, interestRate: 4.0, retailSales: 1.9, consumerConfidence: 94.5, businessConfidence: 107, riskSentiment: 'Risk-Off', inflationData: 'Moderate', score: 4.0 },
+      'USDCAD': { cpi: 3.8, ppi: 2.9, interestRate: 4.1, retailSales: 2.3, consumerConfidence: 99.5, businessConfidence: 113, riskSentiment: 'Risk-On', inflationData: 'High', score: 4.8 },
+      'USDCHF': { cpi: 3.2, ppi: 2.3, interestRate: 4.4, retailSales: 2.0, consumerConfidence: 96.5, businessConfidence: 110, riskSentiment: 'Risk-Off', inflationData: 'Moderate', score: 4.4 },
+      'USDJPY': { cpi: 3.1, ppi: 2.4, interestRate: 4.5, retailSales: 1.7, consumerConfidence: 98.5, businessConfidence: 108, riskSentiment: 'Risk-On', inflationData: 'Moderate', score: 4.5 }
     };
 
-    // Display COT data for individual currencies
-    function displayCotData() {
-      let cotTable = '';
-      for (const currency in cotData) {
-        const data = cotData[currency];
-        const sentiment = data.long > data.short ? 'bullish' : 'bearish';
-        cotTable += `
-          <tr>
-            <td>${currency}</td>
-            <td>${data.long}</td>
-            <td>${data.short}</td>
-            <td>${data.long - data.short}</td>
-            <td class="${sentiment}">${sentiment}</td>
-          </tr>
-        `;
-      }
-      document.getElementById('cot-data').innerHTML = cotTable;
-    }
+    // Dynamically populate COT data
+    const cotTableBody = document.getElementById("cot-data");
+    Object.keys(cotData).forEach(currency => {
+      const data = cotData[currency];
+      cotTableBody.innerHTML += `
+        <tr>
+          <td>${currency}</td>
+          <td>${data.long}</td>
+          <td>${data.short}</td>
+          <td>${data.long - data.short}</td>
+          <td>${data.long > data.short ? "Bullish" : "Bearish"}</td>
+        </tr>
+      `;
+    });
 
-    // Display economic data for 23 currency pairs
-    function displayEconomicData() {
-      let economicTable = '';
-      for (const pair in economicData) {
-        const data = economicData[pair];
-        const signal = data.retailSales > 2 ? 'bullish' : data.retailSales < 1.5 ? 'bearish' : 'neutral';
-        economicTable += `
-          <tr>
-            <td>${pair}</td>
-            <td>${data.cpi}</td>
-            <td>${data.ppi}</td>
-            <td>${data.interestRate}</td>
-            <td>${data.retailSales}</td>
-            <td>${data.consumerConfidence}</td>
-            <td>${data.businessConfidence}</td>
-            <td>${data.riskSentiment}</td>
-            <td>${data
+    // Dynamically populate Economic Data
+    const economicTableBody = document.getElementById("economic-data");
+    Object.keys(economicData).forEach(pair => {
+      const data = economicData[pair];
+      let signalClass = data.score >= 4.5 ? "bullish" : data.score <= 3.5 ? "bearish" : "neutral";
+      economicTableBody.innerHTML += `
+        <tr class="${signalClass}">
+          <td>${pair}</td>
+          <td>${data.cpi}</td>
+          <td>${data.ppi}</td>
+          <td>${data.interestRate}</td>
+          <td>${data.retailSales}</td>
+          <td>${data.consumerConfidence}</td>
+          <td>${data.businessConfidence}</td>
+          <td>${data.riskSentiment}</td>
+          <td>${data.inflationData}</td>
+          <td>${data.score}</td>
+          <td>${signalClass === 'bullish' ? 'Bullish' : signalClass === 'bearish' ? 'Bearish' : 'Neutral'}</td>
+        </tr>
+      `;
+    });
+  </script>
+</body>
+</html>
