@@ -1,133 +1,122 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>📊 Forex Edge Dashboard | Live Economic Data & Market Insights</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+# Forex Edge Dashboard: Live Economic Data & Weekly COT Insights
+# This code pulls live economic data, weekly COT data, and generates bullish/bearish scores for specified currency pairs.
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #121212;
-      color: #e0e0e0;
-      padding: 20px;
-      line-height: 1.6;
-    }
+import requests
+import pandas as pd
+from datetime import datetime
 
-    h1, h2, h3 {
-      text-align: center;
-      color: #f1f1f1;
-      margin-bottom: 20px;
-    }
+# --- Configuration ---
+API_KEY = 'YOUR_API_KEY_HERE'  # Replace with a valid economic data API key
+BASE_URL = 'https://api.example.com/economic'  # Placeholder; replace with actual API endpoint
+COT_URL = 'https://api.example.com/cot'  # Placeholder; replace with actual COT data endpoint
 
-    h1 { font-size: 2.2rem; }
-    h2 { font-size: 1.6rem; margin-top: 40px; }
-    h3 { font-size: 1.2rem; font-weight: 600; margin-top: 30px; color: #d1d1d1; }
+# Currency pairs to track
+currency_pairs = [
+    'AUDCHF', 'AUDJPY', 'AUDUSD', 'AUDNZD', 'AUDCAD', 'EURUSD', 'EURCAD', 'EURAUD', 'EURJPY', 'EURNZD',
+    'EURGBP', 'GBPCAD', 'GBPCHF', 'GBPAUD', 'GBPUSD', 'GBPJPY', 'NZDCAD', 'NZDJPY', 'NZDUSD',
+    'CADCHF', 'CADJPY', 'CHFJPY', 'USDCAD', 'USDCHF', 'USDJPY'
+]
 
-    p {
-      text-align: center;
-      max-width: 850px;
-      margin: 0 auto 25px auto;
-      font-size: 1rem;
-      line-height: 1.8;
-    }
+# Economic indicators to track
+indicators = ['GDP', 'PMI', 'CPI', 'InterestRate', 'RetailSales', 'UnemploymentRate']
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      background-color: #1e1e1e;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    }
+# Scoring system thresholds
+scoring_thresholds = {
+    'Very Bullish': 3,
+    'Bullish': 2,
+    'Neutral': 0,
+    'Bearish': -2,
+    'Very Bearish': -3
+}
 
-    th, td {
-      padding: 14px 16px;
-      text-align: center;
-      font-size: 0.95rem;
-      border-bottom: 1px solid #2c2c2c;
-    }
+# Fetch live economic data
+def fetch_economic_data(currency):
+    response = requests.get(f"{BASE_URL}?currency={currency}&apikey={API_KEY}")
+    if response.status_code == 200:
+        return response.json()
+    return {indicator: None for indicator in indicators}
 
-    th {
-      background: linear-gradient(135deg, #2a2a2a, #3a3a3a);
-      color: #ffffff;
-      text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 0.6px;
-    }
+# Fetch COT data
+def fetch_cot_data(currency):
+    response = requests.get(f"{COT_URL}?currency={currency}&apikey={API_KEY}")
+    if response.status_code == 200:
+        data = response.json()
+        return data.get('long', 0), data.get('short', 0)
+    return 0, 0
 
-    tr:hover { background-color: #2a2a2a; }
+# Calculate economic score
+def calculate_score(data):
+    score = 0
+    if data['GDP'] and data['GDP'] > 2.0: score += 1
+    elif data['GDP'] and data['GDP'] < 1.0: score -= 1
 
-    .bullish { background-color: #2e7d32; color: #ffffff; font-weight: bold; }
-    .bearish { background-color: #c62828; color: #ffffff; font-weight: bold; }
-    .neutral { background-color: #ffb300; color: #1c1c1c; font-weight: bold; }
+    if data['PMI'] and data['PMI'] > 50: score += 1
+    elif data['PMI'] and data['PMI'] < 45: score -= 1
 
-    .dashboard-title {
-      font-size: 2.4rem;
-      font-weight: 700;
-      color: #00bcd4;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.4);
-      margin-bottom: 15px;
-    }
-  </style>
-</head>
-<body>
-  <h1 class="dashboard-title">📈 Forex Edge Dashboard</h1>
-  <p>
-    Stay ahead with real-time economic data and comprehensive currency pair insights. 
-    This dashboard displays GDP, PMI, CPI, interest rates, and key economic indicators for top currency pairs, helping you make informed trading decisions.
-  </p>
+    if data['CPI'] and data['CPI'] > 2.5: score += 1
+    elif data['CPI'] and data['CPI'] < 1.0: score -= 1
 
-  <h2>🌍 Currency Pair Sentiments & Scores</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Currency Pair</th>
-        <th>Base Score</th>
-        <th>Quote Score</th>
-        <th>Pair Score</th>
-        <th>Sentiment</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="bullish"><td>AUD/CHF</td><td>2</td><td>-1</td><td>3</td><td>Very Bullish</td></tr>
-      <tr class="bullish"><td>AUD/JPY</td><td>2</td><td>0</td><td>2</td><td>Bullish</td></tr>
-      <tr class="neutral"><td>AUD/USD</td><td>1</td><td>1</td><td>0</td><td>Neutral</td></tr>
-      <tr class="bearish"><td>EUR/USD</td><td>-1</td><td>2</td><td>-3</td><td>Very Bearish</td></tr>
-      <tr class="bullish"><td>GBP/JPY</td><td>2</td><td>0</td><td>2</td><td>Bullish</td></tr>
-      <tr class="bearish"><td>EUR/AUD</td><td>-1</td><td>2</td><td>-3</td><td>Very Bearish</td></tr>
-      <tr class="bullish"><td>USD/CAD</td><td>2</td><td>-1</td><td>3</td><td>Very Bullish</td></tr>
-      <tr class="bearish"><td>CHF/JPY</td><td>-2</td><td>1</td><td>-3</td><td>Very Bearish</td></tr>
-    </tbody>
-  </table>
+    if data['InterestRate'] and data['InterestRate'] > 2.0: score += 1
+    elif data['InterestRate'] and data['InterestRate'] < 0.5: score -= 1
 
-  <h2>📅 Key Economic Indicators Summary</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Currency</th>
-        <th>GDP (%)</th>
-        <th>PMI</th>
-        <th>CPI (%)</th>
-        <th>Interest Rate (%)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>USD</td><td>2.5</td><td>52.1</td><td>3.1</td><td>5.25</td></tr>
-      <tr><td>EUR</td><td>1.2</td><td>47.8</td><td>2.0</td><td>4.00</td></tr>
-      <tr><td>GBP</td><td>1.7</td><td>50.3</td><td>2.4</td><td>4.75</td></tr>
-      <tr><td>JPY</td><td>0.8</td><td>48.5</td><td>1.1</td><td>0.10</td></tr>
-      <tr><td>AUD</td><td>2.2</td><td>53.4</td><td>3.5</td><td>4.35</td></tr>
-      <tr><td>NZD</td><td>2.0</td><td>51.6</td><td>2.8</td><td>5.50</td></tr>
-      <tr><td>CAD</td><td>1.5</td><td>49.9</td><td>3.2</td><td>4.50</td></tr>
-      <tr><td>CHF</td><td>1.0</td><td>48.1</td><td>1.7</td><td>1.75</td></tr>
-    </tbody>
-  </table>
+    if data['RetailSales'] and data['RetailSales'] > 1.5: score += 1
+    elif data['RetailSales'] and data['RetailSales'] < -0.5: score -= 1
 
-  <p>
-    ⚡ Updated: February 20, 2025 | Data reflects the latest economic releases and currency sentiment analysis.
-  </p>
-</body>
-</html>
+    if data['UnemploymentRate'] and data['UnemploymentRate'] < 4.0: score += 1
+    elif data['UnemploymentRate'] and data['UnemploymentRate'] > 6.0: score -= 1
+
+    return score
+
+# Map score to sentiment
+def map_score_to_sentiment(score):
+    if score >= scoring_thresholds['Very Bullish']:
+        return 'Very Bullish'
+    elif score >= scoring_thresholds['Bullish']:
+        return 'Bullish'
+    elif score <= scoring_thresholds['Very Bearish']:
+        return 'Very Bearish'
+    elif score <= scoring_thresholds['Bearish']:
+        return 'Bearish'
+    return 'Neutral'
+
+# Generate data and scores
+results = []
+for pair in currency_pairs:
+    base_currency, quote_currency = pair[:3], pair[3:]
+    
+    base_data = fetch_economic_data(base_currency)
+    quote_data = fetch_economic_data(quote_currency)
+
+    base_score = calculate_score(base_data)
+    quote_score = calculate_score(quote_data)
+
+    pair_score = base_score - quote_score
+    sentiment = map_score_to_sentiment(pair_score)
+
+    # Fetch COT data (for individual currencies)
+    base_long, base_short = fetch_cot_data(base_currency)
+    quote_long, quote_short = fetch_cot_data(quote_currency)
+
+    results.append({
+        'Currency Pair': pair,
+        'Base Currency Long': base_long,
+        'Base Currency Short': base_short,
+        'Quote Currency Long': quote_long,
+        'Quote Currency Short': quote_short,
+        'Base Score': base_score,
+        'Quote Score': quote_score,
+        'Pair Score': pair_score,
+        'Sentiment': sentiment
+    })
+
+# Create DataFrame and display
+columns = [
+    'Currency Pair', 'Base Currency Long', 'Base Currency Short', 'Quote Currency Long',
+    'Quote Currency Short', 'Base Score', 'Quote Score', 'Pair Score', 'Sentiment'
+]
+
+df = pd.DataFrame(results, columns=columns)
+print(df)
+
+# Export to CSV
+df.to_csv('forex_edge_dashboard.csv', index=False)
