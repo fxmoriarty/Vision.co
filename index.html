@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Professional COT & Currency Sentiment Report</title>
+  <title>COT Data Report - Individual Currencies & Forex Pairs Sentiments</title>
   <style>
-    /* Global Styling */
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f2f6fa;
@@ -16,17 +15,9 @@
 
     h1, h2 {
       text-align: center;
+      font-size: 1.8rem;
       color: #222;
-    }
-
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 10px;
-    }
-
-    h2 {
-      font-size: 1.5rem;
-      margin-top: 40px;
+      margin-bottom: 15px;
     }
 
     table {
@@ -40,175 +31,149 @@
     }
 
     th, td {
-      padding: 14px 16px;
+      padding: 12px 14px;
       text-align: center;
-      border-bottom: 1px solid #e0e0e0;
       font-size: 0.95rem;
+      border-bottom: 1px solid #e0e0e0;
     }
 
     th {
-      background: linear-gradient(135deg, #4a90e2, #357ab7);
+      background: linear-gradient(135deg, #34495e, #2c3e50);
       color: #fff;
       text-transform: uppercase;
-      font-weight: 600;
       letter-spacing: 0.5px;
+      font-weight: 600;
     }
 
     tr:hover {
-      background-color: #f9f9f9;
+      background-color: #f5f5f5;
     }
 
-    /* Sentiment Classes */
-    .bullish {
-      background-color: #d4edda;
-      color: #155724;
-      font-weight: bold;
-      border-radius: 6px;
-    }
-
-    .bearish {
-      background-color: #f8d7da;
-      color: #721c24;
-      font-weight: bold;
-      border-radius: 6px;
-    }
-
-    .neutral {
-      background-color: #fff3cd;
-      color: #856404;
-      font-weight: bold;
-      border-radius: 6px;
-    }
-
-    section {
-      margin-top: 50px;
-    }
+    .bullish { background-color: #c8e6c9; color: #1b5e20; font-weight: bold; }
+    .bearish { background-color: #ffcdd2; color: #b71c1c; font-weight: bold; }
+    .neutral { background-color: #fff9c4; color: #827717; font-weight: bold; }
 
     .info-section {
-      background-color: #e8f0fe;
-      border-left: 6px solid #4a90e2;
-      padding: 20px;
+      background-color: #e3f2fd;
+      border-left: 6px solid #42a5f5;
+      padding: 16px;
       border-radius: 10px;
-      margin-top: 20px;
       font-size: 1rem;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <h1>📊 Weekly COT & Currency Pair Sentiment Report</h1>
+  <h1>📊 Latest COT Data - February 13, 2025</h1>
   <div class="info-section">
-    <strong>Note:</strong> This report reflects institutional positioning and market sentiment for the latest trading week. Colors indicate sentiment strength: <span class="bullish">Bullish</span>, <span class="bearish">Bearish</span>, and <span class="neutral">Neutral</span>.
+    <strong>Note:</strong> Rows are color-coded based on sentiment: <span class="bullish">Bullish</span>, <span class="bearish">Bearish</span>, and <span class="neutral">Neutral</span>.
   </div>
 
-  <section>
-    <h2>Commitments of Traders (COT) Data</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Currency</th>
-          <th>Long Contracts</th>
-          <th>Short Contracts</th>
-          <th>Net Position</th>
-          <th>Sentiment</th>
-        </tr>
-      </thead>
-      <tbody id="cot-data-body"></tbody>
-    </table>
-  </section>
+  <h2>🗂️ Individual Currencies Sentiments</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Currency</th>
+        <th>Long Contracts</th>
+        <th>Short Contracts</th>
+        <th>Net Position</th>
+        <th>Sentiment</th>
+      </tr>
+    </thead>
+    <tbody id="individual-currencies-body"></tbody>
+  </table>
 
-  <section>
-    <h2>Major Currency Pairs</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Currency Pair</th>
-          <th>Sentiment</th>
-        </tr>
-      </thead>
-      <tbody id="major-pairs"></tbody>
-    </table>
-  </section>
-
-  <section>
-    <h2>Minor Currency Pairs</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Currency Pair</th>
-          <th>Sentiment</th>
-        </tr>
-      </thead>
-      <tbody id="minor-pairs"></tbody>
-    </table>
-  </section>
+  <h2>🌍 Forex Pairs Sentiments</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Currency Pair</th>
+        <th>Sentiment</th>
+      </tr>
+    </thead>
+    <tbody id="forex-pairs-body"></tbody>
+  </table>
 
   <script>
-    const cotData = [
-      { currency: 'USD', long: 32000, short: 28000 },
-      { currency: 'EUR', long: 15000, short: 20000 },
-      { currency: 'CAD', long: 12000, short: 8000 },
-      { currency: 'GBP', long: 18000, short: 17000 },
-      { currency: 'JPY', long: 10000, short: 15000 },
-      { currency: 'CHF', long: 11000, short: 11000 },
-      { currency: 'AUD', long: 14000, short: 12000 },
-      { currency: 'NZD', long: 9000, short: 7000 }
+    const individualCurrencies = [
+      { currency: 'USD', long: 29300, short: 18250 },
+      { currency: 'EUR', long: 16450, short: 22300 },
+      { currency: 'GBP', long: 20800, short: 14800 },
+      { currency: 'JPY', long: 25700, short: 24950 },
+      { currency: 'AUD', long: 13900, short: 12450 },
+      { currency: 'NZD', long: 11200, short: 9700 },
+      { currency: 'CAD', long: 15100, short: 16500 },
+      { currency: 'CHF', long: 13150, short: 15600 }
     ];
 
-    const majorPairs = [
-      { pair: 'EUR/USD', sentiment: 'bullish' },
-      { pair: 'GBP/USD', sentiment: 'bearish' },
-      { pair: 'USD/JPY', sentiment: 'neutral' },
-      { pair: 'AUD/USD', sentiment: 'bullish' },
-      { pair: 'USD/CHF', sentiment: 'bearish' },
-      { pair: 'USD/CAD', sentiment: 'neutral' },
-      { pair: 'NZD/USD', sentiment: 'bullish' }
+    const forexPairs = [
+      { pair: 'AUD/CHF', sentiment: 'Bearish' },
+      { pair: 'AUD/JPY', sentiment: 'Bearish' },
+      { pair: 'AUD/USD', sentiment: 'Bullish' },
+      { pair: 'AUD/CAD', sentiment: 'Bearish' },
+      { pair: 'AUD/NZD', sentiment: 'Bullish' },
+      { pair: 'EUR/AUD', sentiment: 'Bearish' },
+      { pair: 'EUR/USD', sentiment: 'Bearish' },
+      { pair: 'EUR/CAD', sentiment: 'Bearish' },
+      { pair: 'EUR/GBP', sentiment: 'Neutral' },
+      { pair: 'EUR/NZD', sentiment: 'Bearish' },
+      { pair: 'GBP/AUD', sentiment: 'Bullish' },
+      { pair: 'GBP/JPY', sentiment: 'Bullish' },
+      { pair: 'GBP/CAD', sentiment: 'Bullish' },
+      { pair: 'GBP/USD', sentiment: 'Bullish' },
+      { pair: 'GBP/NZD', sentiment: 'Bullish' },
+      { pair: 'GBP/CHF', sentiment: 'Bullish' },
+      { pair: 'CAD/CHF', sentiment: 'Bearish' },
+      { pair: 'CAD/JPY', sentiment: 'Bullish' },
+      { pair: 'CHF/JPY', sentiment: 'Bullish' },
+      { pair: 'NZD/CAD', sentiment: 'Bullish' },
+      { pair: 'NZD/USD', sentiment: 'Bullish' },
+      { pair: 'NZD/JPY', sentiment: 'Bullish' },
+      { pair: 'USD/JPY', sentiment: 'Bullish' },
+      { pair: 'USD/CAD', sentiment: 'Neutral' },
+      { pair: 'USD/CHF', sentiment: 'Bearish' }
     ];
 
-    const minorPairs = [
-      { pair: 'EUR/GBP', sentiment: 'neutral' },
-      { pair: 'EUR/AUD', sentiment: 'bearish' },
-      { pair: 'EUR/NZD', sentiment: 'bullish' },
-      { pair: 'GBP/AUD', sentiment: 'bullish' },
-      { pair: 'GBP/JPY', sentiment: 'bullish' },
-      { pair: 'AUD/JPY', sentiment: 'bearish' },
-      { pair: 'AUD/CAD', sentiment: 'bullish' },
-      { pair: 'NZD/CAD', sentiment: 'bearish' }
-    ];
+    const renderIndividualCurrencies = (data) => {
+      const tbody = document.getElementById('individual-currencies-body');
+      tbody.innerHTML = '';
 
-    const populateCOTTable = () => {
-      const tbody = document.getElementById('cot-data-body');
-      cotData.forEach(({ currency, long, short }) => {
+      data.forEach(({ currency, long, short }) => {
         const net = long - short;
         const sentiment = net > 0 ? 'bullish' : net < 0 ? 'bearish' : 'neutral';
 
         const row = `
-          <tr>
+          <tr class="${sentiment}">
             <td>${currency}</td>
             <td>${long.toLocaleString()}</td>
             <td>${short.toLocaleString()}</td>
             <td>${net.toLocaleString()}</td>
-            <td class="${sentiment}">${sentiment.charAt(0).toUpperCase() + sentiment.slice(1)}</td>
+            <td>${sentiment.charAt(0).toUpperCase() + sentiment.slice(1)}</td>
           </tr>
         `;
         tbody.insertAdjacentHTML('beforeend', row);
       });
     };
 
-    const populatePairs = (pairs, tableId) => {
-      const tbody = document.getElementById(tableId);
-      pairs.forEach(({ pair, sentiment }) => {
-        tbody.insertAdjacentHTML('beforeend', `
-          <tr>
+    const renderForexPairs = (data) => {
+      const tbody = document.getElementById('forex-pairs-body');
+      tbody.innerHTML = '';
+
+      data.forEach(({ pair, sentiment }) => {
+        const sentimentClass = sentiment.toLowerCase();
+
+        const row = `
+          <tr class="${sentimentClass}">
             <td>${pair}</td>
-            <td class="${sentiment}">${sentiment.charAt(0).toUpperCase() + sentiment.slice(1)}</td>
+            <td>${sentiment}</td>
           </tr>
-        `);
+        `;
+        tbody.insertAdjacentHTML('beforeend', row);
       });
     };
 
-    populateCOTTable();
-    populatePairs(majorPairs, 'major-pairs');
-    populatePairs(minorPairs, 'minor-pairs');
+    renderIndividualCurrencies(individualCurrencies);
+    renderForexPairs(forexPairs);
   </script>
 </body>
 </html>
