@@ -1,177 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Forex Edge Dashboard</title>
-  <style>
-    body {
-      background-color: #121212;
-      color: #f5f5f5;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-    }
-    h1, h2 {
-      text-align: center;
-      color: #ffffff;
-    }
-    .table-container {
-      margin: 20px auto;
-      max-width: 1200px;
-      padding: 10px;
-    }
-    table {
-      width: 100%;
-      margin-bottom: 20px;
-      border-collapse: collapse;
-      background-color: #1e1e1e;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    }
-    th, td {
-      padding: 14px 16px;
-      text-align: center;
-      font-size: 0.95rem;
-      border-bottom: 1px solid #2c2c2c;
-    }
-    th {
-      background: linear-gradient(135deg, #2a2a2a, #3a3a3a);
-      color: #ffffff;
-      text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 0.6px;
-    }
-    tr:hover {
-      background-color: #2a2a2a;
-    }
-    .bullish { background-color: #1b5e20; color: #ffffff; font-weight: bold; }
-    .neutral { background-color: #ffb300; color: #1c1c1c; font-weight: bold; }
-    .bearish { background-color: #b71c1c; color: #ffffff; font-weight: bold; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Come Forth Update - Investing Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #121212; color: #EAEAEA; font-family: 'Arial', sans-serif; }
+        .container { max-width: 1200px; margin: auto; padding: 20px; }
+        .tab { display: none; }
+        .active-tab { display: block; }
+    </style>
 </head>
-<body>
+<body class="bg-gray-900 text-white">
 
-  <h1>📊 Forex Edge Dashboard - Live Economic Data & COT Analysis</h1>
-  <p style="text-align:center; max-width:800px; margin:0 auto; font-size:1rem;">
-    This dashboard provides regularly updated data on economic indicators, COT reports, and market sentiment to help generate accurate bullish, bearish, or neutral setups for the selected currency pairs.
-  </p>
+    <div class="container">
+        <h1 class="text-3xl font-bold text-center my-6">📊 Come Forth Update</h1>
+        <div class="flex justify-center space-x-4 my-4">
+            <button onclick="showTab('economic')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded">Economic Data</button>
+            <button onclick="showTab('cot')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded">COT Report</button>
+            <button onclick="showTab('forex')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded">Forex Sentiment</button>
+            <button onclick="showTab('volume')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded">Volume Sentiment</button>
+        </div>
 
-  <!-- COT Data for Individual Currencies -->
-  <div class="table-container">
-    <h2>💹 COT Data Report</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Currency</th>
-          <th>Long Contracts</th>
-          <th>Short Contracts</th>
-          <th>Net Position</th>
-          <th>Sentiment</th>
-        </tr>
-      </thead>
-      <tbody id="cot-data"></tbody>
-    </table>
-  </div>
+        <div id="economic" class="tab active-tab">
+            <h2 class="text-2xl font-semibold my-4">📅 Upcoming Economic Data Releases</h2>
+            <table class="w-full border border-gray-700 text-sm">
+                <thead class="bg-gray-800">
+                    <tr>
+                        <th class="p-2">Country</th><th class="p-2">Event</th><th class="p-2">Forecast</th><th class="p-2">Previous</th><th class="p-2">Date</th>
+                    </tr>
+                </thead>
+                <tbody id="economic-data"></tbody>
+            </table>
+        </div>
 
-  <!-- Economic Data for Currency Pairs -->
-  <div class="table-container">
-    <h2>📈 Economic Indicators & Setup Signals</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Currency Pair</th>
-          <th>CPI (%)</th>
-          <th>PPI (%)</th>
-          <th>Interest Rate (%)</th>
-          <th>Retail Sales (%)</th>
-          <th>Consumer Confidence</th>
-          <th>Business Confidence</th>
-          <th>Risk Sentiment</th>
-          <th>Inflation Data</th>
-          <th>Overall Score</th>
-          <th>Signal</th>
-        </tr>
-      </thead>
-      <tbody id="economic-data"></tbody>
-    </table>
-  </div>
+        <div id="cot" class="tab">
+            <h2 class="text-2xl font-semibold my-4">📈 Latest COT Report</h2>
+            <table class="w-full border border-gray-700 text-sm">
+                <thead class="bg-gray-800">
+                    <tr>
+                        <th class="p-2">Currency</th><th class="p-2">Longs</th><th class="p-2">Shorts</th><th class="p-2">Net</th><th class="p-2">Sentiment</th>
+                    </tr>
+                </thead>
+                <tbody id="cot-data"></tbody>
+            </table>
+        </div>
 
-  <script>
-    // COT data for individual currencies
-    const cotData = {
-      'USD': { long: 45000, short: 22000 },
-      'EUR': { long: 33000, short: 25000 },
-      'GBP': { long: 29000, short: 20000 },
-      'JPY': { long: 25000, short: 27000 },
-      'AUD': { long: 22000, short: 17000 },
-      'CAD': { long: 20000, short: 15000 },
-      'CHF': { long: 18000, short: 14000 },
-      'NZD': { long: 17000, short: 12000 }
-    };
+        <div id="forex" class="tab">
+            <h2 class="text-2xl font-semibold my-4">💹 Forex Sentiment Overview</h2>
+            <table class="w-full border border-gray-700 text-sm">
+                <thead class="bg-gray-800">
+                    <tr>
+                        <th class="p-2">Currency Pair</th><th class="p-2">Sentiment</th><th class="p-2">Reason</th>
+                    </tr>
+                </thead>
+                <tbody id="forex-data"></tbody>
+            </table>
+        </div>
 
-    // Economic data for the 23 currency pairs
-    const economicData = {
-      'AUDCHF': { cpi: 3.5, ppi: 2.3, interestRate: 4.0, retailSales: 1.5, consumerConfidence: 95.5, businessConfidence: 105, riskSentiment: 'Risk-On', inflationData: 'Moderate', score: 4.5 },
-      'AUDJPY': { cpi: 3.6, ppi: 2.2, interestRate: 4.1, retailSales: 2.0, consumerConfidence: 93.0, businessConfidence: 107, riskSentiment: 'Risk-Off', inflationData: 'Moderate', score: 4.0 },
-      'AUDUSD': { cpi: 3.4, ppi: 2.1, interestRate: 4.1, retailSales: 1.8, consumerConfidence: 96.2, businessConfidence: 110, riskSentiment: 'Risk-On', inflationData: 'Moderate', score: 4.3 },
-      'EURUSD': { cpi: 2.9, ppi: 2.4, interestRate: 3.5, retailSales: 1.2, consumerConfidence: 92.0, businessConfidence: 105, riskSentiment: 'Risk-Off', inflationData: 'Low', score: 3.8 },
-      'GBPUSD': { cpi: 4.2, ppi: 3.1, interestRate: 4.3, retailSales: 1.5, consumerConfidence: 88.5, businessConfidence: 112, riskSentiment: 'Risk-On', inflationData: 'High', score: 4.6 },
-      'USDJPY': { cpi: 3.1, ppi: 2.8, interestRate: 5.0, retailSales: 2.0, consumerConfidence: 97.0, businessConfidence: 108, riskSentiment: 'Risk-Off', inflationData: 'Moderate', score: 4.2 },
-      'EURGBP': { cpi: 3.3, ppi: 2.5, interestRate: 3.9, retailSales: 1.4, consumerConfidence: 91.5, businessConfidence: 106, riskSentiment: 'Risk-Off', inflationData: 'Moderate', score: 4.1 },
-      'EURCAD': { cpi: 2.7, ppi: 2.2, interestRate: 3.6, retailSales: 1.1, consumerConfidence: 94.0, businessConfidence: 103, riskSentiment: 'Risk-Off', inflationData: 'Low', score: 3.6 },
-      'GBPCAD': { cpi: 3.9, ppi: 3.0, interestRate: 4.2, retailSales: 2.2, consumerConfidence: 89.0, businessConfidence: 111, riskSentiment: 'Risk-On', inflationData: 'High', score: 4.7 },
-      'AUDNZD': { cpi: 3.7, ppi: 2.3, interestRate: 4.2, retailSales: 1.4, consumerConfidence: 92.5, businessConfidence: 108, riskSentiment: 'Risk-On', inflationData: 'Moderate', score: 4.4 },
-      'AUDCAD': { cpi: 3.5, ppi: 2.4, interestRate: 3.8, retailSales: 1.6, consumerConfidence: 94.0, businessConfidence: 105, riskSentiment: 'Risk-On', inflationData: 'Moderate', score: 4.3 },
-      'EURNZD': { cpi: 3.0, ppi: 2.1, interestRate: 3.4, retailSales: 1.3, consumerConfidence: 90.0, businessConfidence: 102, riskSentiment: 'Risk-Off', inflationData: 'Low', score: 3.7 },
-      'NZDCAD': { cpi: 3.6, ppi: 2.5, interestRate: 4.3, retailSales: 1.8, consumerConfidence: 96.5, businessConfidence: 110, riskSentiment: 'Risk-On', inflationData: 'Moderate', score: 4.5 },
-      'NZDJPY': { cpi: 3.0, ppi: 2.0, interestRate: 4.2, retailSales: 1.7, consumerConfidence: 95.0, businessConfidence: 106, riskSentiment: 'Risk-Off', inflationData: 'Low', score: 4.0 },
-      'NZDUSD': { cpi: 3.3, ppi: 2.4, interestRate: 4.1, retailSales: 2.1, consumerConfidence: 98.0, businessConfidence: 109, riskSentiment: 'Risk-On', inflationData: 'Moderate', score: 4.6 },
-      'CADCHF': { cpi: 2.8, ppi: 2.3, interestRate: 3.7, retailSales: 1.5, consumerConfidence: 93.5, businessConfidence: 104, riskSentiment: 'Risk-Off', inflationData: 'Low', score: 3.8 },
-      'CADJPY': { cpi: 2.7, ppi: 2.0, interestRate: 3.8, retailSales: 1.4, consumerConfidence: 92.0, businessConfidence: 102, riskSentiment: 'Risk-On', inflationData: 'Low', score: 4.1 },
-      'CHFJPY': { cpi: 3.4, ppi: 2.2, interestRate: 4.0, retailSales: 1.9, consumerConfidence: 94.5, businessConfidence: 107, riskSentiment: 'Risk-Off', inflationData: 'Moderate', score: 4.0 },
-      'USDCAD': { cpi: 3.8, ppi: 2.9, interestRate: 4.1, retailSales: 2.3, consumerConfidence: 99.5, businessConfidence: 113, riskSentiment: 'Risk-On', inflationData: 'High', score: 4.8 },
-      'USDCHF': { cpi: 3.2, ppi: 2.3, interestRate: 4.4, retailSales: 2.0, consumerConfidence: 96.5, businessConfidence: 110, riskSentiment: 'Risk-Off', inflationData: 'Moderate', score: 4.4 },
-      'USDJPY': { cpi: 3.1, ppi: 2.4, interestRate: 4.5, retailSales: 1.7, consumerConfidence: 98.5, businessConfidence: 108, riskSentiment: 'Risk-On', inflationData: 'Moderate', score: 4.5 }
-    };
+        <div id="volume" class="tab">
+            <h2 class="text-2xl font-semibold my-4">📊 Forex Volume Sentiment</h2>
+            <table class="w-full border border-gray-700 text-sm">
+                <thead class="bg-gray-800">
+                    <tr>
+                        <th class="p-2">Pair</th><th class="p-2">Volume</th><th class="p-2">Sentiment</th><th class="p-2">Notes</th>
+                    </tr>
+                </thead>
+                <tbody id="volume-data"></tbody>
+            </table>
+        </div>
+    </div>
 
-    // Dynamically populate COT data
-    const cotTableBody = document.getElementById("cot-data");
-    Object.keys(cotData).forEach(currency => {
-      const data = cotData[currency];
-      cotTableBody.innerHTML += `
-        <tr>
-          <td>${currency}</td>
-          <td>${data.long}</td>
-          <td>${data.short}</td>
-          <td>${data.long - data.short}</td>
-          <td>${data.long > data.short ? "Bullish" : "Bearish"}</td>
-        </tr>
-      `;
-    });
+    <script>
+        const economicData = [
+            { country: "🇺🇸 USD", event: "Non-Farm Payrolls", forecast: "180K", previous: "200K", date: "Feb 28, 2025" },
+            { country: "🇪🇺 EUR", event: "ECB Rate Decision", forecast: "Hold (4.00%)", previous: "4.00%", date: "Feb 27, 2025" },
+        ];
 
-    // Dynamically populate Economic Data
-    const economicTableBody = document.getElementById("economic-data");
-    Object.keys(economicData).forEach(pair => {
-      const data = economicData[pair];
-      let signalClass = data.score >= 4.5 ? "bullish" : data.score <= 3.5 ? "bearish" : "neutral";
-      economicTableBody.innerHTML += `
-        <tr class="${signalClass}">
-          <td>${pair}</td>
-          <td>${data.cpi}</td>
-          <td>${data.ppi}</td>
-          <td>${data.interestRate}</td>
-          <td>${data.retailSales}</td>
-          <td>${data.consumerConfidence}</td>
-          <td>${data.businessConfidence}</td>
-          <td>${data.riskSentiment}</td>
-          <td>${data.inflationData}</td>
-          <td>${data.score}</td>
-          <td>${signalClass === 'bullish' ? 'Bullish' : signalClass === 'bearish' ? 'Bearish' : 'Neutral'}</td>
-        </tr>
-      `;
-    });
-  </script>
+        const cotData = [
+            { currency: "USD", longs: 48300, shorts: 35700, net: "+12,600", sentiment: "Bullish" },
+            { currency: "EUR", longs: 39800, shorts: 42500, net: "-2,700", sentiment: "Slightly Bearish" },
+        ];
+
+        const forexData = [
+            { pair: "EUR/USD", sentiment: "Bullish EUR", reason: "Strong PMI, stable ECB outlook." },
+            { pair: "GBP/USD", sentiment: "Bearish GBP", reason: "Weak UK data, CPI below forecast." },
+        ];
+
+        const volumeData = [
+            { pair: "EUR/USD", volume: "High", sentiment: "📈 Bullish", notes: "Strong buying near support." },
+            { pair: "GBP/USD", volume: "Moderate", sentiment: "📉 Bearish", notes: "Sellers active after CPI." },
+        ];
+
+        function populateTable(id, data) {
+            const table = document.getElementById(id);
+            table.innerHTML = data.map(row =>
+                `<tr class="border-b border-gray-700">
+                    ${Object.values(row).map(value => `<td class="p-2">${value}</td>`).join("")}
+                </tr>`
+            ).join("");
+        }
+
+        function showTab(tab) {
+            document.querySelectorAll(".tab").forEach(el => el.classList.remove("active-tab"));
+            document.getElementById(tab).classList.add("active-tab");
+        }
+
+        populateTable("economic-data", economicData);
+        populateTable("cot-data", cotData);
+        populateTable("forex-data", forexData);
+        populateTable("volume-data", volumeData);
+    </script>
+
 </body>
 </html>
